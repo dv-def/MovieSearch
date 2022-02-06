@@ -14,19 +14,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         if (savedInstanceState == null) {
-            supportFragmentManager
-                .beginTransaction()
-                .replace(binding.fragmentHost.id, HomeFragment.newInstance())
-                .commit()
+            createHomeFragment()
         }
 
         binding.bottomNavigation.setOnItemSelectedListener {
             when(it.itemId) {
                 R.id.bottom_item_home -> {
-                    supportFragmentManager
-                        .beginTransaction()
-                        .replace(binding.fragmentHost.id, HomeFragment.newInstance())
-                        .commit()
+                    createHomeFragment()
                     true
                 }
                 R.id.bottom_item_favorites -> {
@@ -41,5 +35,12 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun createHomeFragment() {
+        supportFragmentManager
+            .beginTransaction()
+            .replace(binding.fragmentHost.id, HomeFragment.newInstance())
+            .commit()
     }
 }
