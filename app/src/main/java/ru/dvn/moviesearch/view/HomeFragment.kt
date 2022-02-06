@@ -50,7 +50,7 @@ class HomeFragment : Fragment() {
         }
 
         viewModel = ViewModelProvider(this).get(MovieViewModel::class.java)
-        viewModel.getLiveData().observe(viewLifecycleOwner, observer)
+        viewModel.getNowPlayingLiveData().observe(viewLifecycleOwner, observer)
         viewModel.getMoviesFromLocalStorage()
     }
 

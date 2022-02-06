@@ -3,6 +3,7 @@ package ru.dvn.moviesearch.model.movie
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ru.dvn.moviesearch.R
@@ -41,6 +42,26 @@ class MovieNowPlayingAdapter : RecyclerView.Adapter<MovieNowPlayingAdapter.ViewH
 
             val tvRating = itemView.findViewById<TextView>(R.id.item_rating)
             tvRating.text = movie.rating.toString()
+
+            val imgFavorite = itemView.findViewById<ImageView>(R.id.item_favorite)
+            imgFavorite.setImageResource(
+                if (movie.isFavorite) {
+                    R.drawable.ic_favorite_for_user
+                } else {
+                    R.drawable.ic_favorite_border
+                }
+            )
+
+            imgFavorite.setOnClickListener {
+                val imageView = it as ImageView
+                if (!movie.isFavorite) {
+                    imageView.setImageResource(R.drawable.ic_favorite_for_user)
+                    movie.isFavorite = true
+                } else {
+                    imageView.setImageResource(R.drawable.ic_favorite_border)
+                    movie.isFavorite = false
+                }
+            }
         }
     }
 }

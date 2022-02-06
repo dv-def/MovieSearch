@@ -9,10 +9,14 @@ import java.lang.Exception
 import java.lang.Thread.sleep
 
 class MovieViewModel : ViewModel() {
-    private val liveDataForObserve: MutableLiveData<AppState> = MutableLiveData<AppState>()
+    private val nowPlayingLiveData: MutableLiveData<AppState> = MutableLiveData()
+    private val upcomingLiveData: MutableLiveData<AppState> = MutableLiveData()
+
     private val repository: Repository = MockRepository()
 
-    fun getLiveData() = liveDataForObserve
+    fun getNowPlayingLiveData() = nowPlayingLiveData
+
+    fun getUpcomingLiveData() = upcomingLiveData
 
     fun getMoviesFromServer() {
         getDataFromServer()
@@ -24,10 +28,10 @@ class MovieViewModel : ViewModel() {
 
     // Симуляция успешного запроса к базе
     private fun getDataFromLocalStorage() {
-        liveDataForObserve.value = AppState.Loading
+        nowPlayingLiveData.value = AppState.Loading
         Thread {
             sleep(1000)
-            liveDataForObserve.postValue(AppState.Success(repository.getMoviesFromLocalStorage()))
+            nowPlayingLiveData.postValue(AppState.Success(repository.getMoviesFromLocalStorage()))
         }.start()
     }
 
@@ -38,10 +42,10 @@ class MovieViewModel : ViewModel() {
 
     // Симуляция ошибки
     private fun getDataWithError() {
-        liveDataForObserve.value = AppState.Loading
+        nowPlayingLiveData.value = AppState.Loading
         Thread {
             sleep(2000)
-            liveDataForObserve.postValue(AppState.Error(Exception("Test Error")))
+            nowPlayingLiveData.postValue(AppState.Error(Exception("Test Error")))
         }.start()
     }
 }
