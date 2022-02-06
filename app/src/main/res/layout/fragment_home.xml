@@ -24,27 +24,10 @@
                 android:textSize="@dimen/label_text_size"
                 android:textStyle="bold" />
 
-            <LinearLayout
+            <include
                 android:id="@+id/now_playing_loading"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <ProgressBar
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:indeterminateTint="@color/purple_500" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/loading"
-                    android:textSize="@dimen/loading_text_size" />
-
-            </LinearLayout>
+                layout="@layout/loading_layout"
+                android:visibility="gone"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/now_playing_recycler_view"
@@ -69,27 +52,10 @@
                 android:textSize="@dimen/label_text_size"
                 android:textStyle="bold" />
 
-            <LinearLayout
+            <include
                 android:id="@+id/upcoming_loading"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <ProgressBar
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:indeterminateTint="@color/purple_500" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/loading"
-                    android:textSize="@dimen/loading_text_size" />
-
-            </LinearLayout>
+                layout="@layout/loading_layout"
+                android:visibility="gone"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/upcoming_recycler_view"

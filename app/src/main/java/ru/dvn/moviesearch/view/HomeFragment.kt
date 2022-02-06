@@ -73,15 +73,15 @@ class HomeFragment : Fragment() {
     private fun renderNowPlaying(data: NowPlayingAppState) {
         when(data) {
             is NowPlayingAppState.Success -> {
-                binding.nowPlayingLoading.visibility = View.GONE
+                binding.nowPlayingLoading.root.visibility = View.GONE
                 nowPlayingAdapter.setMovies(data.nowPlayingMovieList)
             }
             is NowPlayingAppState.Error -> {
-                binding.nowPlayingLoading.visibility = View.GONE
+                binding.nowPlayingLoading.root.visibility = View.GONE
                 Snackbar.make(binding.main, String.format(getString(R.string.formatted_error), data.error), Snackbar.LENGTH_INDEFINITE).show()
             }
             is NowPlayingAppState.Loading -> {
-                binding.nowPlayingLoading.visibility = View.VISIBLE
+                binding.nowPlayingLoading.root.visibility = View.VISIBLE
             }
         }
     }
@@ -104,15 +104,15 @@ class HomeFragment : Fragment() {
     private fun renderUpcomingData(data: UpcomingAppState) {
         when(data) {
             is UpcomingAppState.Success -> {
-                binding.upcomingLoading.visibility = View.GONE
+                binding.upcomingLoading.root.visibility = View.GONE
                 upcomingAdapter.setMovies(data.movieList)
             }
             is UpcomingAppState.Error -> {
-                binding.upcomingLoading.visibility = View.GONE
+                binding.upcomingLoading.root.visibility = View.GONE
                 Snackbar.make(binding.main, String.format(getString(R.string.formatted_error), data.error), Snackbar.LENGTH_INDEFINITE).show()
             }
             is UpcomingAppState.Loading -> {
-                binding.upcomingLoading.visibility = View.VISIBLE
+                binding.upcomingLoading.root.visibility = View.VISIBLE
             }
         }
     }
