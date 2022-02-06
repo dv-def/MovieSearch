@@ -9,4 +9,5 @@
     <string name="poster">poster</string>
     <string name="favorite">Favorite</string>
     <string name="rating_star">rating_star</string>
+    <string name="in_progress">In Progress</string>
 </resources>
