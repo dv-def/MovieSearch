@@ -1,12 +1,11 @@
 package ru.dvn.moviesearch.model.movie.upcoming
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ru.dvn.moviesearch.R
+import ru.dvn.moviesearch.databinding.MovieUpcomingItemBinding
 
 class MovieUpcomingAdapter : RecyclerView.Adapter<MovieUpcomingAdapter.ViewHolder>() {
     private var upcomingMovieList: List<UpcomingMovie> = ArrayList()
@@ -16,8 +15,8 @@ class MovieUpcomingAdapter : RecyclerView.Adapter<MovieUpcomingAdapter.ViewHolde
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.movie_upcoming_item, parent, false)
-        return ViewHolder(itemView = view)
+        val binding = MovieUpcomingItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -32,10 +31,9 @@ class MovieUpcomingAdapter : RecyclerView.Adapter<MovieUpcomingAdapter.ViewHolde
         upcomingMovieList = movieList
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(private val binding: MovieUpcomingItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(movie: UpcomingMovie) {
-            val imgFavorite = itemView.findViewById<ImageView>(R.id.item_favorite)
-            imgFavorite.setImageResource(
+            binding.itemFavorite.setImageResource(
                 if (movie.isFavorite) {
                     R.drawable.ic_favorite_for_user
                 } else {
@@ -43,7 +41,7 @@ class MovieUpcomingAdapter : RecyclerView.Adapter<MovieUpcomingAdapter.ViewHolde
                 }
             )
 
-            imgFavorite.setOnClickListener {
+            binding.itemFavorite.setOnClickListener {
                 val imageView = it as ImageView
                 if (!movie.isFavorite) {
                     imageView.setImageResource(R.drawable.ic_favorite_for_user)
@@ -54,11 +52,8 @@ class MovieUpcomingAdapter : RecyclerView.Adapter<MovieUpcomingAdapter.ViewHolde
                 }
             }
 
-            val tvName = itemView.findViewById<TextView>(R.id.item_name)
-            tvName.text = movie.name
-
-            val tvDate = itemView.findViewById<TextView>(R.id.item_date)
-            tvDate.text = movie.date
+            binding.itemName.text = movie.name
+            binding.itemDate.text = movie.date
         }
     }
 
