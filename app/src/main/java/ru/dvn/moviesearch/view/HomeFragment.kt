@@ -12,8 +12,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import ru.dvn.moviesearch.R
 import ru.dvn.moviesearch.databinding.FragmentHomeBinding
-import ru.dvn.moviesearch.model.AppState
-import ru.dvn.moviesearch.model.movie.MovieNowPlayingAdapter
+import ru.dvn.moviesearch.model.movie.nowplaying.NowPlayingAppState
+import ru.dvn.moviesearch.model.movie.nowplaying.MovieNowPlayingAdapter
+import ru.dvn.moviesearch.model.movie.upcoming.MovieUpcomingAdapter
+import ru.dvn.moviesearch.model.movie.upcoming.UpcomingAppState
 import ru.dvn.moviesearch.viewmodel.MovieViewModel
 
 class HomeFragment : Fragment() {
@@ -27,6 +29,7 @@ class HomeFragment : Fragment() {
     private lateinit var viewModel: MovieViewModel
 
     private lateinit var nowPlayingAdapter: MovieNowPlayingAdapter
+    private lateinit var upcomingAdapter: MovieUpcomingAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,18 +43,11 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val nowPlayingRecycler = binding.nowPlayingRecyclerView
-        nowPlayingAdapter = MovieNowPlayingAdapter()
-        nowPlayingRecycler.adapter = nowPlayingAdapter
-        nowPlayingRecycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-
-        val observer = Observer<AppState> {
-            renderData(it)
-        }
-
         viewModel = ViewModelProvider(this).get(MovieViewModel::class.java)
-        viewModel.getNowPlayingLiveData().observe(viewLifecycleOwner, observer)
-        viewModel.getMoviesFromLocalStorage()
+
+        initNowPlayingBlock()
+        initUpcomingBlock()
+
     }
 
     override fun onDestroyView() {
@@ -59,16 +55,61 @@ class HomeFragment : Fragment() {
         _binding = null
     }
 
-    private fun renderData(data: AppState) {
+    private fun initNowPlayingBlock() {
+        nowPlayingAdapter = MovieNowPlayingAdapter()
+
+        val nowPlayingRecycler = binding.nowPlayingRecyclerView
+        nowPlayingRecycler.adapter = nowPlayingAdapter
+        nowPlayingRecycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+
+        val observer = Observer<NowPlayingAppState> {
+            renderNowPlaying(it)
+        }
+
+        viewModel.getNowPlayingLiveData().observe(viewLifecycleOwner, observer)
+        viewModel.getNowPlayingMoviesFromLocalStorage()
+
+    }
+
+    private fun renderNowPlaying(data: NowPlayingAppState) {
         when(data) {
-            is AppState.Success -> {
-                nowPlayingAdapter.setMovies(data.movieList)
+            is NowPlayingAppState.Success -> {
+                nowPlayingAdapter.setMovies(data.nowPlayingMovieList)
             }
-            is AppState.Error -> {
+            is NowPlayingAppState.Error -> {
                 Snackbar.make(binding.main, String.format(getString(R.string.formatted_error), data.error), Snackbar.LENGTH_INDEFINITE).show()
             }
-            is AppState.Loading -> {
+            is NowPlayingAppState.Loading -> {
                 Toast.makeText(context, "Loading", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun initUpcomingBlock() {
+        upcomingAdapter = MovieUpcomingAdapter()
+
+        val upcomingRecyclerView = binding.upcomingRecyclerView
+        upcomingRecyclerView.adapter = upcomingAdapter
+        upcomingRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+
+        val observer = Observer<UpcomingAppState> {
+            renderUpcomingData(it)
+        }
+
+        viewModel.getUpcomingLiveData().observe(viewLifecycleOwner, observer)
+        viewModel.getUpcomingFromLocalStorage()
+    }
+
+    private fun renderUpcomingData(data: UpcomingAppState) {
+        when(data) {
+            is UpcomingAppState.Success -> {
+                upcomingAdapter.setMovies(data.movieList)
+            }
+            is UpcomingAppState.Error -> {
+                Snackbar.make(binding.main, String.format(getString(R.string.formatted_error), data.error), Snackbar.LENGTH_INDEFINITE).show()
+            }
+            is UpcomingAppState.Loading -> {
+
             }
         }
     }

@@ -1,4 +1,4 @@
-package ru.dvn.moviesearch.model.movie
+package ru.dvn.moviesearch.model.movie.nowplaying
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.dvn.moviesearch.R
 
 class MovieNowPlayingAdapter : RecyclerView.Adapter<MovieNowPlayingAdapter.ViewHolder>() {
-    private var movieList: List<Movie> = ArrayList()
+    private var nowPlayingMovieList: List<NowPlayingMovie> = ArrayList()
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -21,31 +21,31 @@ class MovieNowPlayingAdapter : RecyclerView.Adapter<MovieNowPlayingAdapter.ViewH
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(movieList[position])
+        holder.bind(nowPlayingMovieList[position])
     }
 
     override fun getItemCount(): Int {
-        return movieList?.size
+        return nowPlayingMovieList.size
     }
 
-    fun setMovies(movieList: List<Movie>) {
-        this.movieList = movieList
+    fun setMovies(nowPlayingMovieList: List<NowPlayingMovie>) {
+        this.nowPlayingMovieList = nowPlayingMovieList
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(movie: Movie) {
+        fun bind(nowPlayingMovie: NowPlayingMovie) {
             val tvName = itemView.findViewById<TextView>(R.id.item_name)
-            tvName.text = movie.name
+            tvName.text = nowPlayingMovie.name
 
             val tvYear = itemView.findViewById<TextView>(R.id.item_year)
-            tvYear.text = movie.year
+            tvYear.text = nowPlayingMovie.year
 
             val tvRating = itemView.findViewById<TextView>(R.id.item_rating)
-            tvRating.text = movie.rating.toString()
+            tvRating.text = nowPlayingMovie.rating.toString()
 
             val imgFavorite = itemView.findViewById<ImageView>(R.id.item_favorite)
             imgFavorite.setImageResource(
-                if (movie.isFavorite) {
+                if (nowPlayingMovie.isFavorite) {
                     R.drawable.ic_favorite_for_user
                 } else {
                     R.drawable.ic_favorite_border
@@ -54,12 +54,12 @@ class MovieNowPlayingAdapter : RecyclerView.Adapter<MovieNowPlayingAdapter.ViewH
 
             imgFavorite.setOnClickListener {
                 val imageView = it as ImageView
-                if (!movie.isFavorite) {
+                if (!nowPlayingMovie.isFavorite) {
                     imageView.setImageResource(R.drawable.ic_favorite_for_user)
-                    movie.isFavorite = true
+                    nowPlayingMovie.isFavorite = true
                 } else {
                     imageView.setImageResource(R.drawable.ic_favorite_border)
-                    movie.isFavorite = false
+                    nowPlayingMovie.isFavorite = false
                 }
             }
         }
