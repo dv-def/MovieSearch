@@ -26,7 +26,7 @@ class MovieViewModel : ViewModel() {
     private fun getDataFromLocalStorage() {
         liveDataForObserve.value = AppState.Loading
         Thread {
-            sleep(2000)
+            sleep(1000)
             liveDataForObserve.postValue(AppState.Success(repository.getMoviesFromLocalStorage()))
         }.start()
     }

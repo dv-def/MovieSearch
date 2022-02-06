@@ -1,5 +1,7 @@
 package ru.dvn.moviesearch.model
 
+import ru.dvn.moviesearch.model.movie.Movie
+
 sealed class AppState {
     data class Success(val movieList: List<Movie>) : AppState()
     data class Error(val error: Throwable) : AppState()
