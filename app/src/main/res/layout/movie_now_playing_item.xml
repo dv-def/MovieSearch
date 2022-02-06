@@ -8,7 +8,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/default_margin">
 
         <ImageView
             android:id="@+id/item_poster"
@@ -27,6 +28,7 @@
             tools:text="Эмма"
             android:gravity="start"
             android:lines="3"
+            android:layout_marginStart="@dimen/default_margin"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/item_poster"
             app:layout_constraintEnd_toEndOf="parent"/>
@@ -36,6 +38,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="2020"
+            android:layout_marginStart="@dimen/default_margin"
+            android:layout_marginTop="@dimen/default_margin"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/item_name"/>
 
@@ -44,6 +48,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="6.9"
+            android:layout_marginTop="@dimen/default_margin"
+            android:layout_marginEnd="@dimen/default_margin"
             app:layout_constraintTop_toBottomOf="@id/item_name"
             app:layout_constraintEnd_toEndOf="parent" />
 
@@ -53,7 +59,8 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_rating_star"
             app:layout_constraintEnd_toStartOf="@id/item_rating"
-            app:layout_constraintTop_toBottomOf="@id/item_name"/>
+            app:layout_constraintTop_toTopOf="@id/item_rating"
+            app:layout_constraintBottom_toBottomOf="@id/item_rating"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
