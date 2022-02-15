@@ -97,22 +97,16 @@ class HomeFragment : Fragment() {
         when(data) {
             is AppState.Success -> {
                 binding.nowPlayingLoading.root.visibility = View.GONE
+                binding.nowPlayingError.visibility = View.GONE
                 nowPlayingAdapter.setMovies(data.movies)
             }
             is AppState.Error -> {
                 binding.nowPlayingLoading.root.visibility = View.GONE
-                Snackbar.make(
-                    binding.nowPlayingMainLayout,
-                    String.format(getString(R.string.formatted_error), data.error.message),
-                    Snackbar.LENGTH_INDEFINITE
-                )
-                    .setAction(R.string.try_again) {
-                        viewModel.getNowPlayingMoviesFromLocalStorage()
-                    }
-                    .show()
+                binding.nowPlayingError.visibility = View.VISIBLE
             }
             is AppState.Loading -> {
                 binding.nowPlayingLoading.root.visibility = View.VISIBLE
+                binding.nowPlayingError.visibility = View.GONE
             }
         }
     }
@@ -139,22 +133,16 @@ class HomeFragment : Fragment() {
         when(data) {
             is AppState.Success -> {
                 binding.upcomingLoading.root.visibility = View.GONE
+                binding.upcomingError.visibility = View.GONE
                 upcomingAdapter.setMovies(data.movies)
             }
             is AppState.Error -> {
                 binding.upcomingLoading.root.visibility = View.GONE
-                Snackbar.make(
-                    binding.upcomingMainLayout,
-                    String.format(getString(R.string.formatted_error), data.error.message),
-                    Snackbar.LENGTH_INDEFINITE
-                )
-                    .setAction(R.string.try_again) {
-                        viewModel.getUpcomingFromLocalStorage()
-                    }
-                    .show()
+                binding.upcomingError.visibility = View.VISIBLE
             }
             is AppState.Loading -> {
                 binding.upcomingLoading.root.visibility = View.VISIBLE
+                binding.upcomingError.visibility = View.GONE
             }
         }
     }
