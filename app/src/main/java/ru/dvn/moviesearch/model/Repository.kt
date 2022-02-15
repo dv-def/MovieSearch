@@ -1,12 +1,11 @@
 package ru.dvn.moviesearch.model
 
-import ru.dvn.moviesearch.model.movie.nowplaying.NowPlayingMovie
-import ru.dvn.moviesearch.model.movie.upcoming.UpcomingMovie
+import ru.dvn.moviesearch.model.movie.Movie
 
 interface Repository {
-    fun getNowPlayingMoviesFromServer(): List<NowPlayingMovie>
-    fun getNowPlayingMoviesFromLocalStorage(): List<NowPlayingMovie>
+    fun getMoviesNowPlayingFromServer(): List<Movie>
+    fun getMoviesNowPlayingLocalStorage(): List<Movie>
 
-    fun getUpcomingMoviesFromServer(): List<UpcomingMovie>
-    fun getUpcomingMoviesFromLocalStorage(): List<UpcomingMovie>
+    fun getMoviesUpcomingFromServer(): List<Movie>
+    fun getMoviesUpcomingFromLocalStorage(): List<Movie>
 }

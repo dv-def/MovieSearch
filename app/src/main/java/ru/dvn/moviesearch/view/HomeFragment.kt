@@ -11,10 +11,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import ru.dvn.moviesearch.R
 import ru.dvn.moviesearch.databinding.FragmentHomeBinding
-import ru.dvn.moviesearch.model.movie.nowplaying.NowPlayingAppState
-import ru.dvn.moviesearch.model.movie.nowplaying.MovieNowPlayingAdapter
-import ru.dvn.moviesearch.model.movie.upcoming.MovieUpcomingAdapter
-import ru.dvn.moviesearch.model.movie.upcoming.UpcomingAppState
+import ru.dvn.moviesearch.model.movie.AdapterMode
+import ru.dvn.moviesearch.model.movie.AppState
+import ru.dvn.moviesearch.model.movie.MovieAdapter
 import ru.dvn.moviesearch.viewmodel.MovieViewModel
 
 class HomeFragment : Fragment() {
@@ -27,8 +26,8 @@ class HomeFragment : Fragment() {
 
     private lateinit var viewModel: MovieViewModel
 
-    private lateinit var nowPlayingAdapter: MovieNowPlayingAdapter
-    private lateinit var upcomingAdapter: MovieUpcomingAdapter
+    private lateinit var nowPlayingAdapter: MovieAdapter
+    private lateinit var upcomingAdapter: MovieAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,13 +54,13 @@ class HomeFragment : Fragment() {
     }
 
     private fun initNowPlayingBlock() {
-        nowPlayingAdapter = MovieNowPlayingAdapter()
+        nowPlayingAdapter = MovieAdapter(mode = AdapterMode.MODE_NOW_PLAYING)
 
         val nowPlayingRecycler = binding.nowPlayingRecyclerView
         nowPlayingRecycler.adapter = nowPlayingAdapter
         nowPlayingRecycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
-        val observer = Observer<NowPlayingAppState> {
+        val observer = Observer<AppState> {
             renderNowPlaying(it)
         }
 
@@ -70,13 +69,13 @@ class HomeFragment : Fragment() {
 
     }
 
-    private fun renderNowPlaying(data: NowPlayingAppState) {
+    private fun renderNowPlaying(data: AppState) {
         when(data) {
-            is NowPlayingAppState.Success -> {
+            is AppState.Success -> {
                 binding.nowPlayingLoading.root.visibility = View.GONE
-                nowPlayingAdapter.setMovies(data.nowPlayingMovieList)
+                nowPlayingAdapter.setMovies(data.movies)
             }
-            is NowPlayingAppState.Error -> {
+            is AppState.Error -> {
                 binding.nowPlayingLoading.root.visibility = View.GONE
                 Snackbar.make(
                     binding.nowPlayingMainLayout,
@@ -88,20 +87,20 @@ class HomeFragment : Fragment() {
                     }
                     .show()
             }
-            is NowPlayingAppState.Loading -> {
+            is AppState.Loading -> {
                 binding.nowPlayingLoading.root.visibility = View.VISIBLE
             }
         }
     }
 
     private fun initUpcomingBlock() {
-        upcomingAdapter = MovieUpcomingAdapter()
+        upcomingAdapter = MovieAdapter(mode = AdapterMode.MODE_UPCOMING)
 
         val upcomingRecyclerView = binding.upcomingRecyclerView
         upcomingRecyclerView.adapter = upcomingAdapter
         upcomingRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
-        val observer = Observer<UpcomingAppState> {
+        val observer = Observer<AppState> {
             renderUpcomingData(it)
         }
 
@@ -109,13 +108,13 @@ class HomeFragment : Fragment() {
         viewModel.getUpcomingFromLocalStorage()
     }
 
-    private fun renderUpcomingData(data: UpcomingAppState) {
+    private fun renderUpcomingData(data: AppState) {
         when(data) {
-            is UpcomingAppState.Success -> {
+            is AppState.Success -> {
                 binding.upcomingLoading.root.visibility = View.GONE
-                upcomingAdapter.setMovies(data.movieList)
+                upcomingAdapter.setMovies(data.movies)
             }
-            is UpcomingAppState.Error -> {
+            is AppState.Error -> {
                 binding.upcomingLoading.root.visibility = View.GONE
                 Snackbar.make(
                     binding.upcomingMainLayout,
@@ -127,7 +126,7 @@ class HomeFragment : Fragment() {
                     }
                     .show()
             }
-            is UpcomingAppState.Loading -> {
+            is AppState.Loading -> {
                 binding.upcomingLoading.root.visibility = View.VISIBLE
             }
         }

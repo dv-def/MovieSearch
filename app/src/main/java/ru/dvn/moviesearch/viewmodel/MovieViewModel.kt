@@ -2,17 +2,16 @@ package ru.dvn.moviesearch.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import ru.dvn.moviesearch.model.movie.nowplaying.NowPlayingAppState
 import ru.dvn.moviesearch.model.MockRepository
 import ru.dvn.moviesearch.model.Repository
-import ru.dvn.moviesearch.model.movie.upcoming.UpcomingAppState
+import ru.dvn.moviesearch.model.movie.AppState
 import java.lang.Exception
 import java.lang.Thread.sleep
 import java.util.*
 
 class MovieViewModel : ViewModel() {
-    private val nowPlayingLiveData: MutableLiveData<NowPlayingAppState> = MutableLiveData()
-    private val upcomingLiveData: MutableLiveData<UpcomingAppState> = MutableLiveData()
+    private val nowPlayingLiveData: MutableLiveData<AppState> = MutableLiveData()
+    private val upcomingLiveData: MutableLiveData<AppState> = MutableLiveData()
 
     private val repository: Repository = MockRepository()
 
@@ -33,25 +32,25 @@ class MovieViewModel : ViewModel() {
 
     // Симуляция успешного запроса к базе
     private fun getNowPlayingFromLocalStorage() {
-        nowPlayingLiveData.value = NowPlayingAppState.Loading
+        nowPlayingLiveData.value = AppState.Loading
         Thread {
             sleep(1000)
-            if (getRandomNumber() > 5) {
-                nowPlayingLiveData.postValue(NowPlayingAppState.Success(repository.getNowPlayingMoviesFromLocalStorage()))
+            if (getRandomNumber() > 2) {
+                nowPlayingLiveData.postValue(AppState.Success(repository.getMoviesNowPlayingLocalStorage()))
             } else {
-                nowPlayingLiveData.postValue(NowPlayingAppState.Error(Exception("By Random :)")))
+                nowPlayingLiveData.postValue(AppState.Error(Exception("By Random :)")))
             }
         }.start()
     }
 
     private fun getUpcomingDataFromLocalStorage() {
-        upcomingLiveData.value = UpcomingAppState.Loading
+        upcomingLiveData.value = AppState.Loading
         Thread {
             sleep(1500)
-            if (getRandomNumber() > 5) {
-                upcomingLiveData.postValue(UpcomingAppState.Success(repository.getUpcomingMoviesFromLocalStorage()))
+            if (getRandomNumber() > 2) {
+                upcomingLiveData.postValue(AppState.Success(repository.getMoviesUpcomingFromLocalStorage()))
             } else {
-                upcomingLiveData.postValue(UpcomingAppState.Error(Exception("By Random :)")))
+                upcomingLiveData.postValue(AppState.Error(Exception("By Random :)")))
             }
         }.start()
     }
@@ -67,18 +66,18 @@ class MovieViewModel : ViewModel() {
 
     // Симуляция ошибки
     private fun getNowPlayingDataWithError() {
-        nowPlayingLiveData.value = NowPlayingAppState.Loading
+        nowPlayingLiveData.value = AppState.Loading
         Thread {
             sleep(2000)
-            nowPlayingLiveData.postValue(NowPlayingAppState.Error(Exception("Test Error")))
+            nowPlayingLiveData.postValue(AppState.Error(Exception("Test Error")))
         }.start()
     }
 
     private fun getUpcomingDataWithError() {
-        upcomingLiveData.value = UpcomingAppState.Loading
+        upcomingLiveData.value = AppState.Loading
         Thread {
             sleep(2000)
-            upcomingLiveData.postValue(UpcomingAppState.Error(Exception("Test Error")))
+            upcomingLiveData.postValue(AppState.Error(Exception("Test Error")))
         }.start()
     }
 
