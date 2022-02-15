@@ -55,8 +55,6 @@ class DetailFragment : Fragment() {
             }
         )
 
-
-
         val length = "${getString(R.string.movie_length)} ${movie?.filmLength} min"
         binding.length.text = length
 
@@ -71,6 +69,8 @@ class DetailFragment : Fragment() {
 
         val releaseDate = "${getString(R.string.release_date)} ${movie?.releaseDate}"
         binding.releaseDate.text = releaseDate
+
+        binding.description.text = movie?.description
     }
 
     override fun onDestroyView() {

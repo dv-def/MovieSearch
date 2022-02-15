@@ -40,6 +40,8 @@ class MockRepository : Repository {
                 revenue = 434_000,
                 releaseDate = "18-05-2019",
                 year = 2019,
+                description = "Долгое и большое описание фильма, которое находится под постером и " +
+                        "может быть не у всех фильмов. В данном дз - только у этого",
                 isFavorite = true
             ),
             Movie(

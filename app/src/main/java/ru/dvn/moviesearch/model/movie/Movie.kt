@@ -13,5 +13,6 @@ data class Movie(
     val revenue: Int,
     val releaseDate: String,
     val year: Int,
+    val description: String? = null,
     var isFavorite: Boolean = false
 ): Parcelable
