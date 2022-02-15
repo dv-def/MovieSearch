@@ -11,4 +11,10 @@
     <string name="rating_star">rating_star</string>
     <string name="in_progress">In Progress</string>
     <string name="try_again">Try Again</string>
+
+    <string name="movie_length">Длительность:</string>
+    <string name="rating">Рейтинг:</string>
+    <string name="budget">Бюджет:</string>
+    <string name="revenue">Сборы:</string>
+    <string name="release_date">Дата выхода:</string>
 </resources>
