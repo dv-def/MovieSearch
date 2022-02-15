@@ -1,5 +1,9 @@
 package ru.dvn.moviesearch.model.movie
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
 data class Movie(
     val name: String,
     val genre: String,
@@ -10,4 +14,4 @@ data class Movie(
     val releaseDate: String,
     val year: Int,
     var isFavorite: Boolean = false
-)
+): Parcelable

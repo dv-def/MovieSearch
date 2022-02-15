@@ -1,9 +1,12 @@
 package ru.dvn.moviesearch.view
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -13,6 +16,7 @@ import ru.dvn.moviesearch.R
 import ru.dvn.moviesearch.databinding.FragmentHomeBinding
 import ru.dvn.moviesearch.model.movie.AdapterMode
 import ru.dvn.moviesearch.model.movie.AppState
+import ru.dvn.moviesearch.model.movie.Movie
 import ru.dvn.moviesearch.model.movie.MovieAdapter
 import ru.dvn.moviesearch.viewmodel.MovieViewModel
 
@@ -28,6 +32,17 @@ class HomeFragment : Fragment() {
 
     private lateinit var nowPlayingAdapter: MovieAdapter
     private lateinit var upcomingAdapter: MovieAdapter
+
+    private lateinit var onMovieClickListener: OnMovieClickListener
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnMovieClickListener) {
+            onMovieClickListener = context
+        } else {
+            Toast.makeText(context, "Can not open movie fragment :(", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,15 +61,24 @@ class HomeFragment : Fragment() {
         initNowPlayingBlock()
         initUpcomingBlock()
 
+        activity?.supportFragmentManager
+            ?.fragments?.forEach {
+                Log.d("TAG", "All ${it.tag}")
+            }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        nowPlayingAdapter.deleteMovieClickListener()
+        upcomingAdapter.deleteMovieClickListener()
     }
 
     private fun initNowPlayingBlock() {
-        nowPlayingAdapter = MovieAdapter(mode = AdapterMode.MODE_NOW_PLAYING)
+        nowPlayingAdapter = MovieAdapter(
+            mode = AdapterMode.MODE_NOW_PLAYING,
+            onMovieClickListener = onMovieClickListener
+        )
 
         val nowPlayingRecycler = binding.nowPlayingRecyclerView
         nowPlayingRecycler.adapter = nowPlayingAdapter
@@ -94,7 +118,10 @@ class HomeFragment : Fragment() {
     }
 
     private fun initUpcomingBlock() {
-        upcomingAdapter = MovieAdapter(mode = AdapterMode.MODE_UPCOMING)
+        upcomingAdapter = MovieAdapter(
+            mode = AdapterMode.MODE_UPCOMING,
+            onMovieClickListener = onMovieClickListener
+        )
 
         val upcomingRecyclerView = binding.upcomingRecyclerView
         upcomingRecyclerView.adapter = upcomingAdapter
@@ -130,5 +157,9 @@ class HomeFragment : Fragment() {
                 binding.upcomingLoading.root.visibility = View.VISIBLE
             }
         }
+    }
+
+    interface OnMovieClickListener {
+        fun onMovieClick(movie: Movie)
     }
 }
