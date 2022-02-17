@@ -29,6 +29,17 @@
                 layout="@layout/loading_layout"
                 android:visibility="gone"/>
 
+            <Button
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:id="@+id/now_playing_error"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/try_again"
+                android:textSize="@dimen/label_text_size"
+                android:layout_gravity="center"
+                android:textColor="@color/purple_700"
+                android:visibility="visible"/>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/now_playing_recycler_view"
                 android:layout_width="match_parent"
@@ -56,6 +67,17 @@
                 android:id="@+id/upcoming_loading"
                 layout="@layout/loading_layout"
                 android:visibility="gone"/>
+
+            <Button
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:id="@+id/upcoming_error"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/try_again"
+                android:textSize="@dimen/label_text_size"
+                android:layout_gravity="center"
+                android:textColor="@color/purple_700"
+                android:visibility="visible"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/upcoming_recycler_view"

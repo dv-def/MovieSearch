@@ -1,9 +1,12 @@
 package ru.dvn.moviesearch.view
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -11,10 +14,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import ru.dvn.moviesearch.R
 import ru.dvn.moviesearch.databinding.FragmentHomeBinding
-import ru.dvn.moviesearch.model.movie.nowplaying.NowPlayingAppState
-import ru.dvn.moviesearch.model.movie.nowplaying.MovieNowPlayingAdapter
-import ru.dvn.moviesearch.model.movie.upcoming.MovieUpcomingAdapter
-import ru.dvn.moviesearch.model.movie.upcoming.UpcomingAppState
+import ru.dvn.moviesearch.model.movie.AdapterMode
+import ru.dvn.moviesearch.model.movie.AppState
+import ru.dvn.moviesearch.model.movie.Movie
+import ru.dvn.moviesearch.model.movie.MovieAdapter
 import ru.dvn.moviesearch.viewmodel.MovieViewModel
 
 class HomeFragment : Fragment() {
@@ -27,8 +30,19 @@ class HomeFragment : Fragment() {
 
     private lateinit var viewModel: MovieViewModel
 
-    private lateinit var nowPlayingAdapter: MovieNowPlayingAdapter
-    private lateinit var upcomingAdapter: MovieUpcomingAdapter
+    private lateinit var nowPlayingAdapter: MovieAdapter
+    private lateinit var upcomingAdapter: MovieAdapter
+
+    private lateinit var onMovieClickListener: OnMovieClickListener
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnMovieClickListener) {
+            onMovieClickListener = context
+        } else {
+            Toast.makeText(context, "Can not open movie fragment :(", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,21 +61,30 @@ class HomeFragment : Fragment() {
         initNowPlayingBlock()
         initUpcomingBlock()
 
+        activity?.supportFragmentManager
+            ?.fragments?.forEach {
+                Log.d("TAG", "All ${it.tag}")
+            }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        nowPlayingAdapter.deleteMovieClickListener()
+        upcomingAdapter.deleteMovieClickListener()
     }
 
     private fun initNowPlayingBlock() {
-        nowPlayingAdapter = MovieNowPlayingAdapter()
+        nowPlayingAdapter = MovieAdapter(
+            mode = AdapterMode.MODE_NOW_PLAYING,
+            onMovieClickListener = onMovieClickListener
+        )
 
         val nowPlayingRecycler = binding.nowPlayingRecyclerView
         nowPlayingRecycler.adapter = nowPlayingAdapter
         nowPlayingRecycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
-        val observer = Observer<NowPlayingAppState> {
+        val observer = Observer<AppState> {
             renderNowPlaying(it)
         }
 
@@ -70,38 +93,35 @@ class HomeFragment : Fragment() {
 
     }
 
-    private fun renderNowPlaying(data: NowPlayingAppState) {
+    private fun renderNowPlaying(data: AppState) {
         when(data) {
-            is NowPlayingAppState.Success -> {
+            is AppState.Success -> {
                 binding.nowPlayingLoading.root.visibility = View.GONE
-                nowPlayingAdapter.setMovies(data.nowPlayingMovieList)
+                binding.nowPlayingError.visibility = View.GONE
+                nowPlayingAdapter.setMovies(data.movies)
             }
-            is NowPlayingAppState.Error -> {
+            is AppState.Error -> {
                 binding.nowPlayingLoading.root.visibility = View.GONE
-                Snackbar.make(
-                    binding.nowPlayingMainLayout,
-                    String.format(getString(R.string.formatted_error), data.error.message),
-                    Snackbar.LENGTH_INDEFINITE
-                )
-                    .setAction(R.string.try_again) {
-                        viewModel.getNowPlayingMoviesFromLocalStorage()
-                    }
-                    .show()
+                binding.nowPlayingError.visibility = View.VISIBLE
             }
-            is NowPlayingAppState.Loading -> {
+            is AppState.Loading -> {
                 binding.nowPlayingLoading.root.visibility = View.VISIBLE
+                binding.nowPlayingError.visibility = View.GONE
             }
         }
     }
 
     private fun initUpcomingBlock() {
-        upcomingAdapter = MovieUpcomingAdapter()
+        upcomingAdapter = MovieAdapter(
+            mode = AdapterMode.MODE_UPCOMING,
+            onMovieClickListener = onMovieClickListener
+        )
 
         val upcomingRecyclerView = binding.upcomingRecyclerView
         upcomingRecyclerView.adapter = upcomingAdapter
         upcomingRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
-        val observer = Observer<UpcomingAppState> {
+        val observer = Observer<AppState> {
             renderUpcomingData(it)
         }
 
@@ -109,27 +129,25 @@ class HomeFragment : Fragment() {
         viewModel.getUpcomingFromLocalStorage()
     }
 
-    private fun renderUpcomingData(data: UpcomingAppState) {
+    private fun renderUpcomingData(data: AppState) {
         when(data) {
-            is UpcomingAppState.Success -> {
+            is AppState.Success -> {
                 binding.upcomingLoading.root.visibility = View.GONE
-                upcomingAdapter.setMovies(data.movieList)
+                binding.upcomingError.visibility = View.GONE
+                upcomingAdapter.setMovies(data.movies)
             }
-            is UpcomingAppState.Error -> {
+            is AppState.Error -> {
                 binding.upcomingLoading.root.visibility = View.GONE
-                Snackbar.make(
-                    binding.upcomingMainLayout,
-                    String.format(getString(R.string.formatted_error), data.error.message),
-                    Snackbar.LENGTH_INDEFINITE
-                )
-                    .setAction(R.string.try_again) {
-                        viewModel.getUpcomingFromLocalStorage()
-                    }
-                    .show()
+                binding.upcomingError.visibility = View.VISIBLE
             }
-            is UpcomingAppState.Loading -> {
+            is AppState.Loading -> {
                 binding.upcomingLoading.root.visibility = View.VISIBLE
+                binding.upcomingError.visibility = View.GONE
             }
         }
+    }
+
+    interface OnMovieClickListener {
+        fun onMovieClick(movie: Movie)
     }
 }
