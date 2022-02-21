@@ -7,11 +7,12 @@ import ru.dvn.moviesearch.databinding.ActivityMainBinding
 import ru.dvn.moviesearch.model.movie.Movie
 
 class MainActivity : AppCompatActivity(), HomeFragment.OnMovieClickListener {
-    private lateinit var binding: ActivityMainBinding
+    private val binding: ActivityMainBinding by lazy {
+        ActivityMainBinding.inflate(layoutInflater)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         if (savedInstanceState == null) {

@@ -2,7 +2,6 @@ package ru.dvn.moviesearch.view
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.snackbar.Snackbar
 import ru.dvn.moviesearch.R
 import ru.dvn.moviesearch.databinding.FragmentHomeBinding
 import ru.dvn.moviesearch.model.movie.AdapterMode
@@ -28,10 +26,22 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var viewModel: MovieViewModel
+    private val viewModel: MovieViewModel by lazy {
+        ViewModelProvider(this).get(MovieViewModel::class.java)
+    }
 
-    private lateinit var nowPlayingAdapter: MovieAdapter
-    private lateinit var upcomingAdapter: MovieAdapter
+    private val nowPlayingAdapter: MovieAdapter by lazy {
+        MovieAdapter(
+            mode = AdapterMode.MODE_NOW_PLAYING,
+            onMovieClickListener = onMovieClickListener
+        )
+    }
+    private val upcomingAdapter: MovieAdapter by lazy {
+        MovieAdapter(
+            mode = AdapterMode.MODE_UPCOMING,
+            onMovieClickListener = onMovieClickListener
+        )
+    }
 
     private lateinit var onMovieClickListener: OnMovieClickListener
 
@@ -39,8 +49,15 @@ class HomeFragment : Fragment() {
         super.onAttach(context)
         if (context is OnMovieClickListener) {
             onMovieClickListener = context
-        } else {
-            Toast.makeText(context, "Can not open movie fragment :(", Toast.LENGTH_SHORT).show()
+        }
+
+        onMovieClickListener = when (context) {
+            is OnMovieClickListener -> context
+            else -> object : OnMovieClickListener {
+                override fun onMovieClick(movie: Movie) {
+                    Toast.makeText(context, R.string.can_not_open_movie, Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
@@ -56,15 +73,8 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel = ViewModelProvider(this).get(MovieViewModel::class.java)
-
         initNowPlayingBlock()
         initUpcomingBlock()
-
-        activity?.supportFragmentManager
-            ?.fragments?.forEach {
-                Log.d("TAG", "All ${it.tag}")
-            }
     }
 
     override fun onDestroyView() {
@@ -79,14 +89,10 @@ class HomeFragment : Fragment() {
             viewModel.getNowPlayingMoviesFromLocalStorage()
         }
 
-        nowPlayingAdapter = MovieAdapter(
-            mode = AdapterMode.MODE_NOW_PLAYING,
-            onMovieClickListener = onMovieClickListener
-        )
-
-        val nowPlayingRecycler = binding.nowPlayingRecyclerView
-        nowPlayingRecycler.adapter = nowPlayingAdapter
-        nowPlayingRecycler.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        binding.nowPlayingRecyclerView.apply {
+            adapter = nowPlayingAdapter
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        }
 
         val observer = Observer<AppState> {
             renderNowPlaying(it)
@@ -98,7 +104,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun renderNowPlaying(data: AppState) {
-        when(data) {
+        when (data) {
             is AppState.Success -> {
                 binding.nowPlayingLoading.root.visibility = View.GONE
                 binding.nowPlayingError.visibility = View.GONE
@@ -120,14 +126,10 @@ class HomeFragment : Fragment() {
             viewModel.getUpcomingFromLocalStorage()
         }
 
-        upcomingAdapter = MovieAdapter(
-            mode = AdapterMode.MODE_UPCOMING,
-            onMovieClickListener = onMovieClickListener
-        )
-
-        val upcomingRecyclerView = binding.upcomingRecyclerView
-        upcomingRecyclerView.adapter = upcomingAdapter
-        upcomingRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        binding.upcomingRecyclerView.apply {
+            adapter = upcomingAdapter
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        }
 
         val observer = Observer<AppState> {
             renderUpcomingData(it)
@@ -138,7 +140,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun renderUpcomingData(data: AppState) {
-        when(data) {
+        when (data) {
             is AppState.Success -> {
                 binding.upcomingLoading.root.visibility = View.GONE
                 binding.upcomingError.visibility = View.GONE

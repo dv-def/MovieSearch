@@ -1,7 +1,5 @@
 package ru.dvn.moviesearch.view
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -44,33 +42,35 @@ class DetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.name.text = movie?.name
-        binding.genre.text = movie?.genre
+        movie?.let {
+            binding.name.text = it.name
+            binding.genre.text = it.genre
 
-        binding.favorite.setImageResource(
-            if (movie?.isFavorite == true) {
-                R.drawable.ic_favorite_for_user
-            } else {
-                R.drawable.ic_favorite_border
-            }
-        )
+            binding.favorite.setImageResource(
+                if (it.isFavorite) {
+                    R.drawable.ic_favorite_for_user
+                } else {
+                    R.drawable.ic_favorite_border
+                }
+            )
 
-        val length = "${getString(R.string.movie_length)} ${movie?.filmLength} min"
-        binding.length.text = length
+            val length = "${getString(R.string.movie_length)} ${it.filmLength} min"
+            binding.length.text = length
 
-        val rating = "${getString(R.string.rating)} ${movie?.rating}"
-        binding.rating.text = rating
+            val rating = "${getString(R.string.rating)} ${it.rating}"
+            binding.rating.text = rating
 
-        val budget = "${getString(R.string.budget)} ${movie?.budget}"
-        binding.budget.text = budget
+            val budget = "${getString(R.string.budget)} ${it.budget}"
+            binding.budget.text = budget
 
-        val revenue = "${getString(R.string.revenue)} ${movie?.revenue}"
-        binding.revenue.text = revenue
+            val revenue = "${getString(R.string.revenue)} ${it.revenue}"
+            binding.revenue.text = revenue
 
-        val releaseDate = "${getString(R.string.release_date)} ${movie?.releaseDate}"
-        binding.releaseDate.text = releaseDate
+            val releaseDate = "${getString(R.string.release_date)} ${it.releaseDate}"
+            binding.releaseDate.text = releaseDate
 
-        binding.description.text = movie?.description
+            binding.description.text = it.description
+        }
     }
 
     override fun onDestroyView() {

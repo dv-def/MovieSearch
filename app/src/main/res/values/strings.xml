@@ -10,7 +10,8 @@
     <string name="favorite">Favorite</string>
     <string name="rating_star">rating_star</string>
     <string name="in_progress">In Progress</string>
-    <string name="try_again">Try Again</string>
+    <string name="try_again">Try to load again</string>
+    <string name="can_not_open_movie">Can open detail</string>
 
     <string name="movie_length">Длительность:</string>
     <string name="rating">Рейтинг:</string>

@@ -55,31 +55,36 @@ class MovieAdapter(
 
             when (binding) {
                 is MovieNowPlayingItemBinding -> {
-                    binding.itemName.text = movie.name
-                    binding.itemYear.text = movie.year.toString()
-                    binding.itemRating.text = movie.rating.toString()
-                    binding.itemFavorite.setImageResource(
-                        if (movie.isFavorite) {
-                            R.drawable.ic_favorite_for_user
-                        } else {
-                            R.drawable.ic_favorite_border
-                        }
-                    )
+                    with(movie) {
+                        binding.itemName.text = name
+                        binding.itemYear.text = year.toString()
+                        binding.itemRating.text = rating.toString()
+                        binding.itemFavorite.setImageResource(
+                            if (isFavorite) {
+                                R.drawable.ic_favorite_for_user
+                            } else {
+                                R.drawable.ic_favorite_border
+                            }
+                        )
 
-                    binding.itemFavorite.setOnClickListener {
-                        val imageView = it as ImageView
-                        if (movie.isFavorite) {
-                            imageView.setImageResource(R.drawable.ic_favorite_border)
-                        } else {
-                            imageView.setImageResource(R.drawable.ic_favorite_for_user)
-                        }
+                        binding.itemFavorite.setOnClickListener {
+                            val imageView = it as ImageView
+                            if (isFavorite) {
+                                imageView.setImageResource(R.drawable.ic_favorite_border)
+                            } else {
+                                imageView.setImageResource(R.drawable.ic_favorite_for_user)
+                            }
 
-                        movie.isFavorite = !movie.isFavorite
+                            isFavorite = !isFavorite
+                        }
                     }
+
                 }
                 is MovieUpcomingItemBinding -> {
-                    binding.itemName.text = movie.name
-                    binding.itemDate.text = movie.releaseDate
+                    with(movie) {
+                        binding.itemName.text = name
+                        binding.itemDate.text = releaseDate
+                    }
                 }
             }
         }
