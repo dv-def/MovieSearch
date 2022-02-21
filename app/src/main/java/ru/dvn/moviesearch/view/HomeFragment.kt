@@ -108,7 +108,7 @@ class HomeFragment : Fragment() {
             is AppState.Success -> {
                 binding.nowPlayingLoading.root.visibility = View.GONE
                 binding.nowPlayingError.visibility = View.GONE
-                nowPlayingAdapter.setMovies(data.movies)
+                nowPlayingAdapter.setMovies(data.movies.sortByRating())
             }
             is AppState.Error -> {
                 binding.nowPlayingLoading.root.visibility = View.GONE
@@ -160,4 +160,7 @@ class HomeFragment : Fragment() {
     interface OnMovieClickListener {
         fun onMovieClick(movie: Movie)
     }
+
+    private fun List<Movie>.sortByRating(): List<Movie> =
+        this.sortedByDescending { it.rating }
 }
