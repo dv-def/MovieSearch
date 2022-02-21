@@ -75,6 +75,10 @@ class HomeFragment : Fragment() {
     }
 
     private fun initNowPlayingBlock() {
+        binding.nowPlayingError.setOnClickListener {
+            viewModel.getNowPlayingMoviesFromLocalStorage()
+        }
+
         nowPlayingAdapter = MovieAdapter(
             mode = AdapterMode.MODE_NOW_PLAYING,
             onMovieClickListener = onMovieClickListener
@@ -112,6 +116,10 @@ class HomeFragment : Fragment() {
     }
 
     private fun initUpcomingBlock() {
+        binding.upcomingError.setOnClickListener {
+            viewModel.getUpcomingFromLocalStorage()
+        }
+
         upcomingAdapter = MovieAdapter(
             mode = AdapterMode.MODE_UPCOMING,
             onMovieClickListener = onMovieClickListener
