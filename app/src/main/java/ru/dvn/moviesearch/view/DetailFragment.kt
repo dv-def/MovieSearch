@@ -28,7 +28,6 @@ class DetailFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        movie = arguments?.getParcelable(Movie::class.java.simpleName)
     }
 
     override fun onCreateView(
@@ -42,7 +41,7 @@ class DetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        movie?.let {
+        arguments?.getParcelable<Movie>(Movie::class.java.simpleName)?.let {
             binding.name.text = it.name
             binding.genre.text = it.genre
 
