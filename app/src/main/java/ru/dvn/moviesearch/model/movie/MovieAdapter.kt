@@ -69,12 +69,13 @@ class MovieAdapter(
 
                         binding.itemFavorite.setOnClickListener {
                             val imageView = it as ImageView
-                            if (isFavorite) {
-                                imageView.setImageResource(R.drawable.ic_favorite_border)
-                            } else {
-                                imageView.setImageResource(R.drawable.ic_favorite_for_user)
-                            }
-
+                            imageView.setImageResource(
+                                if (isFavorite) {
+                                   R.drawable.ic_favorite_border
+                                } else {
+                                    R.drawable.ic_favorite_for_user
+                                }
+                            )
                             isFavorite = !isFavorite
                         }
                     }
