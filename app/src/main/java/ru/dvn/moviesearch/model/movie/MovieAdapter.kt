@@ -1,28 +1,20 @@
 package ru.dvn.moviesearch.model.movie
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
-import ru.dvn.moviesearch.R
-import ru.dvn.moviesearch.databinding.MovieNowPlayingItemBinding
-import ru.dvn.moviesearch.databinding.MovieUpcomingItemBinding
+import kotlinx.android.synthetic.main.movie_item.view.*
+import ru.dvn.moviesearch.databinding.MovieItemBinding
 import ru.dvn.moviesearch.view.HomeFragment
 
 class MovieAdapter(
-    private val mode: AdapterMode,
     private var onMovieClickListener: HomeFragment.OnMovieClickListener?
 ) : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>() {
-    private var movies: List<Movie> = listOf()
+    private var movies: List<FilmDTO> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
-        val binding = if (mode == AdapterMode.MODE_NOW_PLAYING) {
-            MovieNowPlayingItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        } else {
-            MovieUpcomingItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        }
+        val binding = MovieItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
         return MovieViewHolder(binding = binding, onMovieClickListener = onMovieClickListener)
     }
@@ -35,7 +27,7 @@ class MovieAdapter(
         return movies.size
     }
 
-    fun setMovies(movieList: List<Movie>) {
+    fun setMovies(movieList: List<FilmDTO>) {
         movies = movieList
         notifyDataSetChanged()
     }
@@ -45,48 +37,14 @@ class MovieAdapter(
     }
 
     class MovieViewHolder(
-        val binding: ViewBinding,
+        val binding: MovieItemBinding,
         val onMovieClickListener: HomeFragment.OnMovieClickListener?
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(movie: Movie) {
-            binding.root.setOnClickListener {
-                onMovieClickListener?.onMovieClick(movie = movie)
-            }
-
-            when (binding) {
-                is MovieNowPlayingItemBinding -> {
-                    with(movie) {
-                        binding.itemName.text = name
-                        binding.itemYear.text = year.toString()
-                        binding.itemRating.text = rating.toString()
-                        binding.itemFavorite.setImageResource(
-                            if (isFavorite) {
-                                R.drawable.ic_favorite_for_user
-                            } else {
-                                R.drawable.ic_favorite_border
-                            }
-                        )
-
-                        binding.itemFavorite.setOnClickListener {
-                            val imageView = it as ImageView
-                            imageView.setImageResource(
-                                if (isFavorite) {
-                                   R.drawable.ic_favorite_border
-                                } else {
-                                    R.drawable.ic_favorite_for_user
-                                }
-                            )
-                            isFavorite = !isFavorite
-                        }
-                    }
-
-                }
-                is MovieUpcomingItemBinding -> {
-                    with(movie) {
-                        binding.itemName.text = name
-                        binding.itemDate.text = releaseDate
-                    }
-                }
+        fun bind(filmDTO: FilmDTO) {
+            with(binding) {
+                itemName.text = filmDTO.nameRu
+                itemYear.text = filmDTO.year.toString()
+                itemRating.text = filmDTO.rating.toString()
             }
         }
     }

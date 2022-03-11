@@ -4,9 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import ru.dvn.moviesearch.R
 import ru.dvn.moviesearch.databinding.ActivityMainBinding
-import ru.dvn.moviesearch.model.movie.Movie
 
-class MainActivity : AppCompatActivity(), HomeFragment.OnMovieClickListener {
+class MainActivity : AppCompatActivity() {
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
@@ -39,13 +38,13 @@ class MainActivity : AppCompatActivity(), HomeFragment.OnMovieClickListener {
         }
     }
 
-    override fun onMovieClick(movie: Movie) {
-        supportFragmentManager
-            .beginTransaction()
-            .replace(binding.fragmentHost.id, DetailFragment.newInstance(movie = movie))
-            .addToBackStack(null)
-            .commit()
-    }
+//    override fun onMovieClick(movieId: Int) {
+//        supportFragmentManager
+//            .beginTransaction()
+//            .replace(binding.fragmentHost.id, DetailFragment.newInstance(movieId = movieId))
+//            .addToBackStack(null)
+//            .commit()
+//    }
 
     private fun createHomeFragment() {
         supportFragmentManager

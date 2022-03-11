@@ -10,77 +10,77 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:id="@+id/now_playing_main_layout"
+            android:id="@+id/top_best_main_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/now_playing_label"
+                android:id="@+id/top_best_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/default_margin"
-                android:text="@string/now_playing"
+                android:text="@string/top_best"
                 android:textSize="@dimen/label_text_size"
                 android:textStyle="bold" />
 
             <include
-                android:id="@+id/now_playing_loading"
+                android:id="@+id/top_best_loading"
                 layout="@layout/loading_layout"
-                android:visibility="gone"/>
+                android:visibility="visible"/>
 
             <Button
                 style="@style/Widget.AppCompat.Button.Borderless"
-                android:id="@+id/now_playing_error"
+                android:id="@+id/top_best_error"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/try_again"
                 android:textSize="@dimen/label_text_size"
                 android:layout_gravity="center"
                 android:textColor="@color/purple_700"
-                android:visibility="visible"/>
+                android:visibility="gone"/>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/now_playing_recycler_view"
+                android:id="@+id/top_best_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/upcoming_main_layout"
+            android:id="@+id/top_await_main_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/upcoming_label"
+                android:id="@+id/top_await_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/default_margin"
                 android:layout_marginTop="@dimen/default_margin"
-                android:text="@string/upcoming"
+                android:text="@string/top_await"
                 android:textSize="@dimen/label_text_size"
                 android:textStyle="bold" />
 
             <include
-                android:id="@+id/upcoming_loading"
+                android:id="@+id/top_await_loading"
                 layout="@layout/loading_layout"
-                android:visibility="gone"/>
+                android:visibility="visible"/>
 
             <Button
                 style="@style/Widget.AppCompat.Button.Borderless"
-                android:id="@+id/upcoming_error"
+                android:id="@+id/top_await_error"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/try_again"
                 android:textSize="@dimen/label_text_size"
                 android:layout_gravity="center"
                 android:textColor="@color/purple_700"
-                android:visibility="visible"/>
+                android:visibility="gone"/>
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/upcoming_recycler_view"
+                android:id="@+id/top_await_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 

@@ -2,9 +2,9 @@
     <string name="app_name">MovieSearch</string>
     <string name="home">Home</string>
     <string name="favorites">Favorites</string>
-    <string name="now_playing">Now Playing</string>
+    <string name="top_best">Top Best</string>
     <string name="formatted_error">Error: %s</string>
-    <string name="upcoming">Upcoming</string>
+    <string name="top_await">Top Await</string>
     <string name="loading">Loading…</string>
     <string name="poster">poster</string>
     <string name="favorite">Favorite</string>

@@ -1,11 +1,8 @@
 package ru.dvn.moviesearch.model
 
-import ru.dvn.moviesearch.model.movie.Movie
+import ru.dvn.moviesearch.model.movie.MovieList
 
 interface Repository {
-    fun getMoviesNowPlayingFromServer(): List<Movie>
-    fun getMoviesNowPlayingLocalStorage(): List<Movie>
-
-    fun getMoviesUpcomingFromServer(): List<Movie>
-    fun getMoviesUpcomingFromLocalStorage(): List<Movie>
+    fun getNowPlayingMovies(): MovieList
+    fun getTopAwaitMovies(): MovieList
 }
