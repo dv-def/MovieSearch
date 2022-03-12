@@ -2,6 +2,7 @@ package ru.dvn.moviesearch.model.movie
 
 import android.os.Build
 import android.os.Handler
+import android.util.Log
 import androidx.annotation.RequiresApi
 import com.google.gson.Gson
 import ru.dvn.moviesearch.BuildConfig
@@ -25,7 +26,7 @@ class MovieListLoader(
     @RequiresApi(Build.VERSION_CODES.N)
     fun loadMovieList() {
         try {
-            val url = URL("https://kinopoiskapiunofficial.tech/api/v2.2/films/top")
+            val url = URL("https://kinopoiskapiunofficial.tech/api/v2.2/films/top?type=${moviesLoadMode.getMode()}")
             val handler = Handler()
             Thread {
                 lateinit var urlConnection: HttpsURLConnection
@@ -34,9 +35,11 @@ class MovieListLoader(
                         requestMethod = "GET"
                         readTimeout = 10000
                         addRequestProperty("X-API-KEY", BuildConfig.MOVIES_API_KEY)
-                        addRequestProperty("type", moviesLoadMode.name)
+//                        addRequestProperty("type", moviesLoadMode.name)
                     }
 
+                    Log.d("LOADER", urlConnection.url.toString())
+                    Log.d("LOADER", urlConnection.toString())
                     val reader = BufferedReader(InputStreamReader(urlConnection.inputStream))
                     val json = reader.lines().collect(Collectors.joining("\n"))
 

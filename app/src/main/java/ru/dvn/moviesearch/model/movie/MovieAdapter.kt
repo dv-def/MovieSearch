@@ -44,7 +44,7 @@ class MovieAdapter(
             with(binding) {
                 itemName.text = filmDTO.nameRu
                 itemYear.text = filmDTO.year.toString()
-                itemRating.text = filmDTO.rating.toString()
+                itemRating.text = filmDTO.rating
             }
         }
     }

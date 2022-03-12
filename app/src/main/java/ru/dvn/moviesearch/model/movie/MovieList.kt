@@ -14,6 +14,6 @@ data class FilmDTO (
     val nameRu: String?,
     val year: Int?,
     val filmLength:String?,
-    val rating: Double?,
+    val rating: String?,
     val posterUrlPreview: String?
 ): Parcelable
