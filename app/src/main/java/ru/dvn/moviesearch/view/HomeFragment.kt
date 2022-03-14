@@ -14,9 +14,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import ru.dvn.moviesearch.R
 import ru.dvn.moviesearch.databinding.FragmentHomeBinding
 import ru.dvn.moviesearch.model.movie.MovieAdapter
-import ru.dvn.moviesearch.model.movie.MovieList
-import ru.dvn.moviesearch.model.movie.MovieListLoader
-import ru.dvn.moviesearch.model.movie.MoviesLoadMode
+import ru.dvn.moviesearch.model.movie.list.MovieList
+import ru.dvn.moviesearch.model.movie.list.MovieListLoader
+import ru.dvn.moviesearch.model.movie.list.MoviesLoadMode
 
 class HomeFragment : Fragment() {
     companion object {

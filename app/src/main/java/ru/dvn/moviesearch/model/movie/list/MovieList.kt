@@ -1,4 +1,4 @@
-package ru.dvn.moviesearch.model.movie
+package ru.dvn.moviesearch.model.movie.list
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

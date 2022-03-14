@@ -3,9 +3,8 @@ package ru.dvn.moviesearch.model.movie
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewbinding.ViewBinding
-import kotlinx.android.synthetic.main.movie_item.view.*
 import ru.dvn.moviesearch.databinding.MovieItemBinding
+import ru.dvn.moviesearch.model.movie.list.FilmDTO
 import ru.dvn.moviesearch.view.HomeFragment
 
 class MovieAdapter(
@@ -45,6 +44,12 @@ class MovieAdapter(
                 itemName.text = filmDTO.nameRu
                 itemYear.text = filmDTO.year.toString()
                 itemRating.text = filmDTO.rating
+
+                root.setOnClickListener {
+                    filmDTO.filmId?.let { filmId ->
+                        onMovieClickListener?.onMovieClick(filmId)
+                    }
+                }
             }
         }
     }

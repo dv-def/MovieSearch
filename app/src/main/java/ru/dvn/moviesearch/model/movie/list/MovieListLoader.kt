@@ -1,4 +1,4 @@
-package ru.dvn.moviesearch.model.movie
+package ru.dvn.moviesearch.model.movie.list
 
 import android.os.Build
 import android.os.Handler
@@ -35,7 +35,6 @@ class MovieListLoader(
                         requestMethod = "GET"
                         readTimeout = 10000
                         addRequestProperty("X-API-KEY", BuildConfig.MOVIES_API_KEY)
-//                        addRequestProperty("type", moviesLoadMode.name)
                     }
 
                     Log.d("LOADER", urlConnection.url.toString())

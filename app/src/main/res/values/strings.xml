@@ -1,21 +1,19 @@
 <resources>
-    <string name="app_name">MovieSearch</string>
-    <string name="home">Home</string>
-    <string name="favorites">Favorites</string>
-    <string name="top_best">Top Best</string>
-    <string name="formatted_error">Error: %s</string>
-    <string name="top_await">Top Await</string>
-    <string name="loading">Loading…</string>
-    <string name="poster">poster</string>
-    <string name="favorite">Favorite</string>
-    <string name="rating_star">rating_star</string>
-    <string name="in_progress">In Progress</string>
-    <string name="try_again">Try to load again</string>
-    <string name="can_not_open_movie">Can open detail</string>
+    <string name="app_name">КиноТоп</string>
+    <string name="home">Главна</string>
+    <string name="favorites">Избранное</string>
+    <string name="top_best">Топ лучших</string>
+    <string name="formatted_error">Ошибка: %s</string>
+    <string name="top_await">Топ ожидаемых</string>
+    <string name="loading">Загрузка…</string>
+    <string name="poster">Постер</string>
+    <string name="rating_star">Рейтинг</string>
+    <string name="in_progress">В процессе</string>
+    <string name="try_again">Повторить запрос</string>
 
     <string name="movie_length">Длительность:</string>
     <string name="rating">Рейтинг:</string>
-    <string name="budget">Бюджет:</string>
-    <string name="revenue">Сборы:</string>
-    <string name="release_date">Дата выхода:</string>
+    <string name="year">Год:</string>
+    <string name="rating_await">Ожидаемый рейтинг:</string>
+    <string name="description_is_empty">Описание пока что отсутствует</string>
 </resources>
