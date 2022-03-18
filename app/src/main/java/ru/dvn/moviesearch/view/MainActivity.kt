@@ -1,14 +1,20 @@
 package ru.dvn.moviesearch.view
 
+import android.content.Intent
+import android.content.IntentFilter
+import android.net.ConnectivityManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import ru.dvn.moviesearch.R
 import ru.dvn.moviesearch.databinding.ActivityMainBinding
+import ru.dvn.moviesearch.model.ConnectivityReceiver
 
 class MainActivity : AppCompatActivity() {
     private val binding: ActivityMainBinding by lazy {
         ActivityMainBinding.inflate(layoutInflater)
     }
+
+    private val receiver = ConnectivityReceiver()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,15 +42,9 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-    }
 
-//    override fun onMovieClick(movieId: Int) {
-//        supportFragmentManager
-//            .beginTransaction()
-//            .replace(binding.fragmentHost.id, DetailFragment.newInstance(movieId = movieId))
-//            .addToBackStack(null)
-//            .commit()
-//    }
+        registerReceiver(receiver, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
+    }
 
     private fun createHomeFragment() {
         supportFragmentManager
