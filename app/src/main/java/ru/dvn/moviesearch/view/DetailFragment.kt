@@ -1,5 +1,9 @@
 package ru.dvn.moviesearch.view
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,12 +12,22 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import ru.dvn.moviesearch.R
 import ru.dvn.moviesearch.databinding.FragmentDetailBinding
+import ru.dvn.moviesearch.model.movie.detail.DetailService
+import ru.dvn.moviesearch.model.movie.detail.EXTRA_DETAIL_ID
 import ru.dvn.moviesearch.model.movie.detail.GenreDto
 import ru.dvn.moviesearch.model.movie.detail.MovieDetailDto
-import ru.dvn.moviesearch.model.movie.detail.MovieDetailLoader
 import java.lang.StringBuilder
+
+const val EXTRA_DETAIL_STATUS = "EXTRA_DETAIL_STATUS"
+const val EXTRA_DETAIL_STATUS_SUCCESS = "EXTRA_DETAIL_STATUS_SUCCESS"
+const val EXTRA_DETAIL_STATUS_ERROR = "EXTRA_DETAIL_STATUS_ERROR"
+
+const val EXTRA_DETAIL = "EXTRA_DETAIL"
+
+const val EXTRA_DETAIL_ACTION = "EXTRA_DETAIL_ACTION"
 
 class DetailFragment : Fragment() {
     companion object {
@@ -32,20 +46,31 @@ class DetailFragment : Fragment() {
     private var _binding: FragmentDetailBinding? = null
     private val binding get() = _binding!!
 
-    private val loaderListener = object: MovieDetailLoader.MovieDetailsLoaderListener {
-        override fun onLoaded(movieDetailDto: MovieDetailDto) {
-            binding.detailsLoadingLayout.visibility = View.GONE
-            binding.detailsMainLayout.visibility = View.VISIBLE
-            showMovie(movieDetailDto)
-        }
+    private val receiver = object: BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            when(intent.getStringExtra(EXTRA_DETAIL_STATUS)) {
+                EXTRA_DETAIL_STATUS_SUCCESS -> {
+                    intent.getParcelableExtra<MovieDetailDto>(EXTRA_DETAIL)?.let {
+                        showMovie(it)
+                    }
+                }
 
-        override fun onFailed(throwable: Throwable) {
-            Toast.makeText(context, "ERROR", Toast.LENGTH_SHORT).show()
-            activity?.supportFragmentManager?.popBackStack()
+                EXTRA_DETAIL_STATUS_ERROR -> {
+                    activity?.supportFragmentManager?.popBackStack()
+                    Toast.makeText(context, R.string.detail_error, Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
-    private val loader = MovieDetailLoader(listener = loaderListener)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        context?.let {
+            LocalBroadcastManager.getInstance(it)
+                .registerReceiver(receiver, IntentFilter(EXTRA_DETAIL_ACTION)
+            )
+        }
+        super.onCreate(savedInstanceState)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -59,8 +84,15 @@ class DetailFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        arguments?.getInt(EXTRA_MOVIE_ID)?.let {
-            loader.loadMovie(it)
+
+        context?.let { context->
+            arguments?.getInt(EXTRA_MOVIE_ID)?.let { id ->
+                context.startService(
+                    Intent(context, DetailService::class.java).apply {
+                        putExtra(EXTRA_DETAIL_ID, id)
+                    }
+                )
+            }
         }
     }
 
@@ -69,7 +101,18 @@ class DetailFragment : Fragment() {
         _binding = null
     }
 
+    override fun onDestroy() {
+        context?.let {
+            LocalBroadcastManager.getInstance(it)
+                .unregisterReceiver(receiver)
+        }
+        super.onDestroy()
+    }
+
     private fun showMovie(movieDetailDto: MovieDetailDto) {
+        binding.detailsLoadingLayout.visibility = View.GONE
+        binding.detailsMainLayout.visibility = View.VISIBLE
+
         with (movieDetailDto) {
             nameRu?.let {
                 binding.name.text = it

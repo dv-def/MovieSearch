@@ -22,6 +22,7 @@
         </activity>
 
         <service android:name=".model.movie.list.MovieListService"/>
+        <service android:name=".model.movie.detail.DetailService"/>
     </application>
 
 </manifest>

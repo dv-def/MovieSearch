@@ -21,7 +21,7 @@ import javax.net.ssl.HttpsURLConnection
 
 const val EXTRA_MOVIE_LOAD_MODE = "EXTRA_MOVIE_LOAD_MODE"
 
-class MovieListService() : Service() {
+class MovieListService : Service() {
     private val intent = Intent(MOVIE_LIST_RECEIVER_ACTION)
 
     override fun onBind(p0: Intent?): IBinder? {

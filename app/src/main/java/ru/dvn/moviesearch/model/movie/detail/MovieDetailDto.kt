@@ -1,5 +1,9 @@
 package ru.dvn.moviesearch.model.movie.detail
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
 data class MovieDetailDto(
     val kinopoiskId: Int?,
     val nameRu: String?,
@@ -11,8 +15,9 @@ data class MovieDetailDto(
     val genres: List<GenreDto>?,
     val year: Int?,
     val filmLength: Int?
-)
+): Parcelable
 
+@Parcelize
 data class GenreDto (
     val genre: String?
-)
+): Parcelable

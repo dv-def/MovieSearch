@@ -16,4 +16,5 @@
     <string name="year">Год:</string>
     <string name="rating_await">Ожидаемый рейтинг:</string>
     <string name="description_is_empty">Описание пока что отсутствует</string>
+    <string name="detail_error">Невозможо отобразить информацию по фильму</string>
 </resources>
