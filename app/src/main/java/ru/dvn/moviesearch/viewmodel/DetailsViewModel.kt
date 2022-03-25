@@ -19,7 +19,6 @@ class DetailsViewModel : ViewModel() {
             val serverResponse = response.body()
             if (response.isSuccessful && serverResponse != null) {
                 liveData.postValue(DetailsState.Success(serverResponse))
-                liveData.postValue(DetailsState.Error(Exception("Server Error")))
             } else {
                 liveData.postValue(DetailsState.Error(Exception("Server Error")))
             }
