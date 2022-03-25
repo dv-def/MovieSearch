@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import ru.dvn.moviesearch.R
 import ru.dvn.moviesearch.databinding.FragmentHomeBinding
 import ru.dvn.moviesearch.model.movie.list.MovieListState
-import ru.dvn.moviesearch.model.movie.MovieAdapter
+import ru.dvn.moviesearch.model.movie.list.MovieAdapter
 import ru.dvn.moviesearch.model.movie.list.MoviesLoadMode
 import ru.dvn.moviesearch.viewmodel.MovieListViewModel
 

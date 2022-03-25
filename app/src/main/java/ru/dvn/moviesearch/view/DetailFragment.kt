@@ -9,6 +9,7 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
+import com.squareup.picasso.Picasso
 import ru.dvn.moviesearch.R
 import ru.dvn.moviesearch.databinding.FragmentDetailBinding
 import ru.dvn.moviesearch.model.movie.detail.DetailsState
@@ -146,6 +147,14 @@ class DetailFragment : Fragment() {
                 binding.description.text = it
             } ?: run {
                 binding.description.visibility = View.GONE
+            }
+
+            posterUrl?.let {
+                Picasso.get()
+                    .load(it)
+                    .placeholder(R.drawable.loading)
+                    .error(R.drawable.default_poster)
+                    .into(binding.poster)
             }
         }
     }

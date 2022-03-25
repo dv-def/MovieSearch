@@ -1,10 +1,11 @@
-package ru.dvn.moviesearch.model.movie
+package ru.dvn.moviesearch.model.movie.list
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
+import ru.dvn.moviesearch.R
 import ru.dvn.moviesearch.databinding.MovieItemBinding
-import ru.dvn.moviesearch.model.movie.list.FilmDTO
 import ru.dvn.moviesearch.view.HomeFragment
 
 class MovieAdapter(
@@ -39,11 +40,18 @@ class MovieAdapter(
         val binding: MovieItemBinding,
         val onMovieClickListener: HomeFragment.OnMovieClickListener?
     ) : RecyclerView.ViewHolder(binding.root) {
+
         fun bind(filmDTO: FilmDTO) {
             with(binding) {
                 itemName.text = filmDTO.nameRu
                 itemYear.text = filmDTO.year.toString()
                 itemRating.text = filmDTO.rating
+
+                Picasso.get()
+                    .load(filmDTO.posterUrlPreview)
+                    .placeholder(R.drawable.loading)
+                    .error(R.drawable.default_poster)
+                    .into(binding.itemPoster)
 
                 root.setOnClickListener {
                     filmDTO.filmId?.let { filmId ->
