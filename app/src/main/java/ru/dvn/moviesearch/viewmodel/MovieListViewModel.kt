@@ -6,7 +6,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import ru.dvn.moviesearch.model.movie.AppState
-import ru.dvn.moviesearch.model.movie.list.MovieList
+import ru.dvn.moviesearch.model.movie.list.MovieListDto
 import ru.dvn.moviesearch.model.movie.list.MovieListRepository
 import ru.dvn.moviesearch.model.movie.list.MovieListRepositoryListImpl
 import ru.dvn.moviesearch.model.movie.list.MoviesLoadMode
@@ -17,8 +17,8 @@ class MovieListViewModel : ViewModel() {
     private val topAwaitLiveData: MutableLiveData<AppState> = MutableLiveData()
     private val repository: MovieListRepository = MovieListRepositoryListImpl()
 
-    private val callBackTopBest = object: Callback<MovieList> {
-        override fun onResponse(call: Call<MovieList>, response: Response<MovieList>) {
+    private val callBackTopBest = object: Callback<MovieListDto> {
+        override fun onResponse(call: Call<MovieListDto>, response: Response<MovieListDto>) {
             val serverResponse = response.body()
             if (response.isSuccessful && serverResponse != null) {
                 topBestLiveData.postValue(AppState.SuccessList(serverResponse))
@@ -27,13 +27,13 @@ class MovieListViewModel : ViewModel() {
             }
         }
 
-        override fun onFailure(call: Call<MovieList>, t: Throwable) {
+        override fun onFailure(call: Call<MovieListDto>, t: Throwable) {
             topBestLiveData.postValue(AppState.Error(Exception("Bad request")))
         }
     }
 
-    private val callBackTopAwait = object: Callback<MovieList> {
-        override fun onResponse(call: Call<MovieList>, response: Response<MovieList>) {
+    private val callBackTopAwait = object: Callback<MovieListDto> {
+        override fun onResponse(call: Call<MovieListDto>, response: Response<MovieListDto>) {
             val serverResponse = response.body()
             if (response.isSuccessful && serverResponse != null) {
                 topAwaitLiveData.postValue(AppState.SuccessList(serverResponse))
@@ -42,7 +42,7 @@ class MovieListViewModel : ViewModel() {
             }
         }
 
-        override fun onFailure(call: Call<MovieList>, t: Throwable) {
+        override fun onFailure(call: Call<MovieListDto>, t: Throwable) {
             topAwaitLiveData.postValue(AppState.Error(Exception("Bad request")))
         }
     }
