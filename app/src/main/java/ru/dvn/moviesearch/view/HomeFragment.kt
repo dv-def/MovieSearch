@@ -12,7 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.dvn.moviesearch.R
 import ru.dvn.moviesearch.databinding.FragmentHomeBinding
-import ru.dvn.moviesearch.model.movie.list.MovieListState
+import ru.dvn.moviesearch.model.movie.AppState
 import ru.dvn.moviesearch.model.movie.list.MovieAdapter
 import ru.dvn.moviesearch.model.movie.list.MoviesLoadMode
 import ru.dvn.moviesearch.viewmodel.MovieListViewModel
@@ -114,20 +114,20 @@ class HomeFragment : Fragment() {
         viewModel.getMovieList(MoviesLoadMode.TOP_AWAIT_FILMS)
     }
 
-    private fun renderTopBestData(movieListState: MovieListState) {
-        when (movieListState) {
-            is MovieListState.Success -> {
+    private fun renderTopBestData(appState: AppState) {
+        when (appState) {
+            is AppState.SuccessList -> {
                 binding.topBestLoading.root.visibility = View.GONE
                 binding.topBestMainLayout.visibility = View.VISIBLE
-                movieListState.movies.films?.let {
+                appState.movies.films?.let {
                     topBestMoviesAdapter.setMovies(it)
                 }
             }
-            is MovieListState.Error -> {
+            is AppState.Error -> {
                 binding.topBestLoading.root.visibility = View.GONE
                 binding.topBestError.visibility = View.VISIBLE
             }
-            is MovieListState.Loading -> {
+            is AppState.Loading -> {
                 binding.topBestLoading.root.visibility = View.VISIBLE
                 binding.topBestError.visibility = View.GONE
                 binding.topBestMainLayout.visibility = View.GONE
@@ -135,20 +135,20 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun renderTopAwait(movieListState: MovieListState) {
-        when (movieListState) {
-            is MovieListState.Success -> {
+    private fun renderTopAwait(appState: AppState) {
+        when (appState) {
+            is AppState.SuccessList -> {
                 binding.topAwaitLoading.root.visibility = View.GONE
                 binding.topAwaitMainLayout.visibility = View.VISIBLE
-                movieListState.movies.films?.let {
+                appState.movies.films?.let {
                     topAwaitMoviesAdapter.setMovies(it)
                 }
             }
-            is MovieListState.Error -> {
+            is AppState.Error -> {
                 binding.topAwaitLoading.root.visibility = View.GONE
                 binding.topAwaitError.visibility = View.VISIBLE
             }
-            is MovieListState.Loading -> {
+            is AppState.Loading -> {
                 binding.topAwaitLoading.root.visibility = View.VISIBLE
                 binding.topAwaitError.visibility = View.GONE
                 binding.topAwaitMainLayout.visibility = View.GONE

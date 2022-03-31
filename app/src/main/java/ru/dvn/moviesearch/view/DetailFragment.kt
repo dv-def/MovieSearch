@@ -12,7 +12,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import ru.dvn.moviesearch.R
 import ru.dvn.moviesearch.databinding.FragmentDetailBinding
-import ru.dvn.moviesearch.model.movie.detail.DetailsState
+import ru.dvn.moviesearch.model.movie.AppState
 import ru.dvn.moviesearch.model.movie.detail.GenreDto
 import ru.dvn.moviesearch.model.movie.detail.MovieDetailDto
 import ru.dvn.moviesearch.viewmodel.DetailsViewModel
@@ -64,14 +64,14 @@ class DetailFragment : Fragment() {
         _binding = null
     }
 
-    private fun renderData(detailsState: DetailsState) {
-        when(detailsState) {
-            is DetailsState.Success -> {
+    private fun renderData(appState: AppState) {
+        when (appState) {
+            is AppState.SuccessDetails -> {
                 binding.detailsLoadingLayout.visibility = View.GONE
                 binding.detailsMainLayout.visibility = View.VISIBLE
-                showMovie(detailsState.movie)
+                showMovie(appState.movie)
             }
-            is DetailsState.Error -> {
+            is AppState.Error -> {
                 binding.detailsLoadingLayout.visibility = View.GONE
                 binding.detailsMainLayout.visibility = View.GONE
                 Snackbar
@@ -81,7 +81,7 @@ class DetailFragment : Fragment() {
                     }
                     .show()
             }
-            is DetailsState.Loading -> {
+            is AppState.Loading -> {
                 binding.detailsLoadingLayout.visibility = View.VISIBLE
                 binding.detailsMainLayout.visibility = View.GONE
             }
