@@ -11,4 +11,6 @@
 
     <dimen name="detail_movie_name_text_size">28sp</dimen>
     <dimen name="detail_movie_default_text_size">16sp</dimen>
+    <dimen name="bnt_save_margin">8dp</dimen>
+    <dimen name="settings_padding">4dp</dimen>
 </resources>

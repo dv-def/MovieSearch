@@ -30,7 +30,18 @@ class MainActivity : AppCompatActivity() {
                     supportFragmentManager
                         .beginTransaction()
                         .replace(binding.fragmentHost.id, FavoritesFragment.newInstance())
+                        .addToBackStack(null)
                         .commit()
+
+                    true
+                }
+                R.id.bottom_item_settings -> {
+                    supportFragmentManager
+                        .beginTransaction()
+                        .replace(binding.fragmentHost.id, SettingsFragment())
+                        .addToBackStack(null)
+                        .commit()
+
                     true
                 }
                 else -> {

@@ -9,4 +9,9 @@
         android:id="@+id/bottom_item_favorites"
         android:title="@string/favorites"
         android:icon="@drawable/ic_favorite_bottom_icon"/>
+
+    <item
+        android:id="@+id/bottom_item_settings"
+        android:title="@string/settings"
+        android:icon="@drawable/ic_baseline_settings"/>
 </menu>
