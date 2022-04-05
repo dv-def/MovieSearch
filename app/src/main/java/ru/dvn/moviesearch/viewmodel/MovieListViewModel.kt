@@ -5,11 +5,11 @@ import androidx.lifecycle.ViewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import ru.dvn.moviesearch.model.movie.AppState
-import ru.dvn.moviesearch.model.movie.list.MovieListDto
-import ru.dvn.moviesearch.model.movie.list.MovieListRepository
-import ru.dvn.moviesearch.model.movie.list.MovieListRepositoryListImpl
-import ru.dvn.moviesearch.model.movie.list.MoviesLoadMode
+import ru.dvn.moviesearch.model.AppState
+import ru.dvn.moviesearch.model.movie.list.remote.MovieListDto
+import ru.dvn.moviesearch.model.movie.list.remote.MovieListRepository
+import ru.dvn.moviesearch.model.movie.list.remote.MovieListRepositoryListImpl
+import ru.dvn.moviesearch.model.movie.list.remote.MoviesLoadMode
 import java.lang.Exception
 
 class MovieListViewModel : ViewModel() {

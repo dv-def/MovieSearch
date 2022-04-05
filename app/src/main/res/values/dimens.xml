@@ -13,4 +13,6 @@
     <dimen name="detail_movie_default_text_size">16sp</dimen>
     <dimen name="bnt_save_margin">8dp</dimen>
     <dimen name="settings_padding">4dp</dimen>
+    <dimen name="note_title">16sp</dimen>
+    <dimen name="card_note_content_padding">8dp</dimen>
 </resources>

@@ -1,7 +1,6 @@
-package ru.dvn.moviesearch.model.movie.list
+package ru.dvn.moviesearch.model.movie.list.remote
 
 import retrofit2.Callback
-import ru.dvn.moviesearch.model.movie.list.remote.DataSourceList
 
 class MovieListRepositoryListImpl : MovieListRepository {
     private val dataSource = DataSourceList()

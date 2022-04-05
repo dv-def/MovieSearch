@@ -1,7 +1,5 @@
 package ru.dvn.moviesearch.view
 
-import android.content.IntentFilter
-import android.net.ConnectivityManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import ru.dvn.moviesearch.R
@@ -30,6 +28,14 @@ class MainActivity : AppCompatActivity() {
                     supportFragmentManager
                         .beginTransaction()
                         .replace(binding.fragmentHost.id, FavoritesFragment.newInstance())
+                        .addToBackStack(null)
+                        .commit()
+
+                    true
+                }
+                R.id.bottom_item_history -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(binding.fragmentHost.id, HistoryFragment())
                         .addToBackStack(null)
                         .commit()
 

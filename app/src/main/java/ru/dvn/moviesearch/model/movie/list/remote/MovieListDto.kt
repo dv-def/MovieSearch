@@ -1,4 +1,4 @@
-package ru.dvn.moviesearch.model.movie.list
+package ru.dvn.moviesearch.model.movie.list.remote
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
@@ -10,7 +10,7 @@ data class MovieListDto (
 
 @Parcelize
 data class FilmDTO (
-    val filmId: Int?,
+    val filmId: Long?,
     val nameRu: String?,
     val year: Int?,
     val filmLength:String?,

@@ -1,4 +1,4 @@
-package ru.dvn.moviesearch.model.movie.list
+package ru.dvn.moviesearch.model.movie.list.remote
 
 import retrofit2.Callback
 

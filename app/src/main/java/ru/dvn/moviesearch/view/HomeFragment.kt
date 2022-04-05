@@ -12,9 +12,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.dvn.moviesearch.R
 import ru.dvn.moviesearch.databinding.FragmentHomeBinding
-import ru.dvn.moviesearch.model.movie.AppState
+import ru.dvn.moviesearch.model.AppState
 import ru.dvn.moviesearch.model.movie.list.MovieAdapter
-import ru.dvn.moviesearch.model.movie.list.MoviesLoadMode
+import ru.dvn.moviesearch.model.movie.list.remote.MoviesLoadMode
 import ru.dvn.moviesearch.viewmodel.MovieListViewModel
 
 class HomeFragment : Fragment() {
@@ -33,7 +33,7 @@ class HomeFragment : Fragment() {
     }
 
     private val onMovieClickListener = object : OnMovieClickListener {
-        override fun onMovieClick(movieId: Int) {
+        override fun onMovieClick(movieId: Long) {
             activity?.supportFragmentManager?.apply {
                 beginTransaction()
                     .add(R.id.fragment_host, DetailFragment.newInstance(movieId = movieId))
@@ -157,7 +157,7 @@ class HomeFragment : Fragment() {
     }
 
     interface OnMovieClickListener {
-        fun onMovieClick(movieId: Int)
+        fun onMovieClick(movieId: Long)
     }
 
 }
