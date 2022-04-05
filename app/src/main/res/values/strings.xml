@@ -22,6 +22,6 @@
     <string name="save">Сохранить</string>
     <string name="history">Истроия</string>
     <string name="add_note">Добваить заметку</string>
-    <string name="note_title">Загоовок</string>
+    <string name="note_title">Заголовок</string>
     <string name="note_text">Текст заметки</string>
 </resources>
