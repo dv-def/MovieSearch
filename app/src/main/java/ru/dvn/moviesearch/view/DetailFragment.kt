@@ -92,8 +92,17 @@ class DetailFragment : Fragment() {
         }
 
         requestDetails()
-        requestNotes()
+        if (activity?.getPreferences(Context.MODE_PRIVATE)?.getBoolean(NOTES_SETTINGS_KEY, false) == true) {
+            binding.rvNotes.visibility = View.VISIBLE
+            requestNotes()
+        } else {
+            binding.rvNotes.visibility = View.GONE
+        }
 
+    }
+
+    override fun onStart() {
+        super.onStart()
     }
 
     override fun onDestroyView() {
