@@ -5,11 +5,7 @@ import androidx.lifecycle.ViewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import ru.dvn.moviesearch.App.Companion.getDatabase
 import ru.dvn.moviesearch.model.AppState
-import ru.dvn.moviesearch.model.movie.detail.local.MovieEntity
-import ru.dvn.moviesearch.model.movie.detail.local.MovieLocalRepository
-import ru.dvn.moviesearch.model.movie.detail.local.MovieLocalRepositoryImpl
 import ru.dvn.moviesearch.model.movie.detail.remote.DetailsRemoteRepository
 import ru.dvn.moviesearch.model.movie.detail.remote.DetailsRemoteRepositoryImpl
 import ru.dvn.moviesearch.model.movie.detail.remote.MovieDetailDto
@@ -17,7 +13,6 @@ import ru.dvn.moviesearch.model.movie.detail.remote.MovieDetailDto
 class DetailsViewModel : ViewModel() {
     private val liveData = MutableLiveData<AppState>()
     private val remoteRepository: DetailsRemoteRepository = DetailsRemoteRepositoryImpl()
-    private val localRepository: MovieLocalRepository = MovieLocalRepositoryImpl(getDatabase().getMovieDao())
 
     private val callback = object: Callback<MovieDetailDto> {
         override fun onResponse(call: Call<MovieDetailDto>, response: Response<MovieDetailDto>) {
@@ -39,13 +34,5 @@ class DetailsViewModel : ViewModel() {
     fun getDetails(id: Long) {
         liveData.postValue(AppState.Loading)
         remoteRepository.getDetails(id, callback)
-    }
-
-    fun saveInDataBase(entity: MovieEntity) {
-        entity.kinopoiskId?.let {
-            if (localRepository.findByKinopoiskId(it) == null) {
-                localRepository.save(entity)
-            }
-        }
     }
 }

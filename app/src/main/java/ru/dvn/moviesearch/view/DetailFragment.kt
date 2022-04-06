@@ -21,7 +21,6 @@ import ru.dvn.moviesearch.model.history.HistoryEntity
 import ru.dvn.moviesearch.model.movie.detail.remote.GenreDto
 import ru.dvn.moviesearch.model.movie.detail.remote.MovieDetailDto
 import ru.dvn.moviesearch.model.note.recycler.NoteAdapter
-import ru.dvn.moviesearch.utils.convertDetailMovieDtoToMovieEntity
 import ru.dvn.moviesearch.utils.getCurrentDate
 import ru.dvn.moviesearch.viewmodel.DetailsViewModel
 import ru.dvn.moviesearch.viewmodel.HistoryViewModel
@@ -173,7 +172,7 @@ class DetailFragment : Fragment() {
                 binding.detailsLoadingLayout.visibility = View.GONE
                 binding.detailsMainLayout.visibility = View.VISIBLE
                 showMovie(appState.movie)
-                saveMovieToDataBase(appState.movie)
+                saveHistory(appState.movie)
             }
             is AppState.Error -> {
                 binding.detailsLoadingLayout.visibility = View.GONE
@@ -273,18 +272,16 @@ class DetailFragment : Fragment() {
         }
     }
 
-    private fun saveMovieToDataBase(movieDetailDto: MovieDetailDto) {
+    private fun saveHistory(movieDetailDto: MovieDetailDto) {
         handlerThread?.let {
             val handler = Handler(it.looper)
             handler.post {
-                val movie = convertDetailMovieDtoToMovieEntity(movieDetailDto)
-                detailViewModel.saveInDataBase(movie)
 
                 val history = HistoryEntity(
                     id = 0,
-                    kinopoiskFilmId = movie.kinopoiskId,
-                    movieName = movie.name,
-                    moviePoster = movie.posterUrlPreview,
+                    kinopoiskFilmId = movieDetailDto.kinopoiskId,
+                    movieName = movieDetailDto.nameRu,
+                    moviePoster = movieDetailDto.posterUrlPreview,
                     date = getCurrentDate()
                 )
 

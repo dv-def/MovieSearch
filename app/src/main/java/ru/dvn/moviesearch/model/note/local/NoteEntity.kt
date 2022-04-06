@@ -2,9 +2,7 @@ package ru.dvn.moviesearch.model.note.local
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import ru.dvn.moviesearch.model.movie.detail.local.MovieEntity
 
 const val TABLE_NAME_NOTES = "notes"
 
