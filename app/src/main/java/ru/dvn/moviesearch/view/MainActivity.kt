@@ -24,15 +24,6 @@ class MainActivity : AppCompatActivity() {
                     createHomeFragment()
                     true
                 }
-                R.id.bottom_item_favorites -> {
-                    supportFragmentManager
-                        .beginTransaction()
-                        .replace(binding.fragmentHost.id, FavoritesFragment.newInstance())
-                        .addToBackStack(null)
-                        .commit()
-
-                    true
-                }
                 R.id.bottom_item_history -> {
                     supportFragmentManager.beginTransaction()
                         .replace(binding.fragmentHost.id, HistoryFragment())

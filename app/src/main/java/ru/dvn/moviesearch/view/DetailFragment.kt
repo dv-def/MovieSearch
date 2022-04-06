@@ -17,11 +17,14 @@ import com.squareup.picasso.Picasso
 import ru.dvn.moviesearch.R
 import ru.dvn.moviesearch.databinding.FragmentDetailBinding
 import ru.dvn.moviesearch.model.AppState
+import ru.dvn.moviesearch.model.history.HistoryEntity
 import ru.dvn.moviesearch.model.movie.detail.remote.GenreDto
 import ru.dvn.moviesearch.model.movie.detail.remote.MovieDetailDto
 import ru.dvn.moviesearch.model.note.recycler.NoteAdapter
 import ru.dvn.moviesearch.utils.convertDetailMovieDtoToMovieEntity
+import ru.dvn.moviesearch.utils.getCurrentDate
 import ru.dvn.moviesearch.viewmodel.DetailsViewModel
+import ru.dvn.moviesearch.viewmodel.HistoryViewModel
 import ru.dvn.moviesearch.viewmodel.NotesViewModel
 import java.lang.StringBuilder
 
@@ -48,6 +51,10 @@ class DetailFragment : Fragment() {
 
     private val notesViewModel: NotesViewModel by lazy {
         ViewModelProvider(this).get(NotesViewModel::class.java)
+    }
+
+    private val historyViewModel: HistoryViewModel by lazy {
+        ViewModelProvider(this).get(HistoryViewModel::class.java)
     }
 
     private var handlerThread: HandlerThread? = null
@@ -270,8 +277,19 @@ class DetailFragment : Fragment() {
         handlerThread?.let {
             val handler = Handler(it.looper)
             handler.post {
-                val entity = convertDetailMovieDtoToMovieEntity(movieDetailDto)
-                detailViewModel.saveInDataBase(entity)
+                val movie = convertDetailMovieDtoToMovieEntity(movieDetailDto)
+                detailViewModel.saveInDataBase(movie)
+
+                val history = HistoryEntity(
+                    id = 0,
+                    kinopoiskFilmId = movie.kinopoiskId,
+                    movieName = movie.name,
+                    moviePoster = movie.posterUrlPreview,
+                    date = getCurrentDate()
+                )
+
+                historyViewModel.save(history)
+
             }
         }
     }

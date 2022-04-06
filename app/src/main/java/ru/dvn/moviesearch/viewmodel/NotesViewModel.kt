@@ -20,8 +20,6 @@ class NotesViewModel(
         repository.getAllByKinopoisId(kinopoiskId)?.let {
             if (it.isNotEmpty()) {
                 liveData.postValue(AppState.SuccessNotes(it))
-            } else {
-                liveData.postValue(AppState.Error(Exception("Пусто")))
             }
         }
     }

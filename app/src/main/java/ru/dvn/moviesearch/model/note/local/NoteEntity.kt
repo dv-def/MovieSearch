@@ -9,15 +9,7 @@ import ru.dvn.moviesearch.model.movie.detail.local.MovieEntity
 const val TABLE_NAME_NOTES = "notes"
 
 @Entity(
-    tableName = TABLE_NAME_NOTES,
-    foreignKeys = [
-        ForeignKey(
-            entity = MovieEntity::class,
-            parentColumns = arrayOf("kinopoisk_id"),
-            childColumns = arrayOf("kinopoisk_film_id"),
-            onDelete = ForeignKey.CASCADE
-        )
-    ]
+    tableName = TABLE_NAME_NOTES
 )
 data class NoteEntity(
     @PrimaryKey(autoGenerate = true)

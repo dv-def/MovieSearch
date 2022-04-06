@@ -1,5 +1,6 @@
 package ru.dvn.moviesearch.model
 
+import ru.dvn.moviesearch.model.history.HistoryEntity
 import ru.dvn.moviesearch.model.movie.detail.remote.MovieDetailDto
 import ru.dvn.moviesearch.model.movie.list.remote.MovieListDto
 import ru.dvn.moviesearch.model.note.local.NoteEntity
@@ -9,6 +10,8 @@ sealed class AppState {
     data class SuccessDetails(val movie: MovieDetailDto) : AppState()
     data class SuccessNotes(val notes: List<NoteEntity>) : AppState()
     data class SuccessDML(val result: Long, val message: String): AppState() // успешно создали, изменили, удалили
+    data class SuccessHistory(val history: List<HistoryEntity>): AppState()
+
     data class Error(val error: Throwable) : AppState()
     object Loading : AppState()
 }

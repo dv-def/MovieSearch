@@ -13,6 +13,7 @@ import ru.dvn.moviesearch.R
 import ru.dvn.moviesearch.databinding.FragmentNoteEditBinding
 import ru.dvn.moviesearch.model.AppState
 import ru.dvn.moviesearch.model.note.local.NoteEntity
+import ru.dvn.moviesearch.utils.getCurrentDate
 import ru.dvn.moviesearch.viewmodel.NotesViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -84,8 +85,7 @@ class NoteEditFragment : Fragment() {
                         kinopoiskFilmId = kinopoiskId,
                         title = title,
                         text = text,
-                        date = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
-                            .format(Date().time)
+                        date = getCurrentDate()
                     )
 
                     handlerThread?.let {
@@ -113,6 +113,5 @@ class NoteEditFragment : Fragment() {
         super.onDestroy()
         handlerThread?.quitSafely()
         handlerThread = null
-        print("NOTE EDIT ON DESTROY")
     }
 }
