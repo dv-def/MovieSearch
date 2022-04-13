@@ -2,6 +2,8 @@ package ru.dvn.moviesearch.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import ru.dvn.moviesearch.R
 import ru.dvn.moviesearch.databinding.ActivityMainBinding
 
@@ -46,6 +48,24 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_activity_main_toolbar_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.item_contacts -> {
+                supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.fragment_host, ContactsFragment.newInstance())
+                    .addToBackStack(null)
+                    .commit()
+            }
+        }
+        return true
     }
 
     private fun createHomeFragment() {
