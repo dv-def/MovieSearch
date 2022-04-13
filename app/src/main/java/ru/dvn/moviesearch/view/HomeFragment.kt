@@ -2,10 +2,9 @@ package ru.dvn.moviesearch.view
 
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.annotation.RequiresApi
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
@@ -49,6 +48,7 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        setHasOptionsMenu(true)
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -66,6 +66,25 @@ class HomeFragment : Fragment() {
         _binding = null
         topBestMoviesAdapter.deleteMovieClickListener()
         topAwaitMoviesAdapter.deleteMovieClickListener()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_search, menu)
+        (menu.findItem(R.id.item_search).actionView as SearchView).apply {
+            queryHint = activity?.getString(R.string.search)
+            setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    return false
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    topBestMoviesAdapter.filter.filter(newText)
+                    topAwaitMoviesAdapter.filter.filter(newText)
+
+                    return true
+                }
+            })
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.N)

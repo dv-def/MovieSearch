@@ -25,14 +25,14 @@ class HistoryAdapter(
                 result.addAll(historyFull)
             } else {
                 val search = text.toString().lowercase().trim()
-                result.addAll(history.filter {
+                result.addAll(historyFull.filter {
                     it.movieName?.lowercase()?.contains(search) == true
                 })
             }
 
-            val filterResult = FilterResults()
-            filterResult.values = result
-            return filterResult
+            return FilterResults().apply {
+                values = result
+            }
         }
 
         override fun publishResults(text: CharSequence?, result: FilterResults?) {
