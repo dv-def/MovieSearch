@@ -3,6 +3,8 @@ package ru.dvn.moviesearch.model.history
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -11,7 +13,7 @@ import ru.dvn.moviesearch.R
 
 class HistoryAdapter(
     private val onItemClickListener: OnItemClickListener
-) : RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>() {
+) : RecyclerView.Adapter<HistoryAdapter.HistoryViewHolder>(), Filterable {
     private val history: ArrayList<HistoryEntity> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryViewHolder {
@@ -57,6 +59,10 @@ class HistoryAdapter(
                 }
             }
         }
+    }
+
+    override fun getFilter(): Filter {
+        TODO("Not yet implemented")
     }
 
 }
