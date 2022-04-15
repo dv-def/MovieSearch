@@ -7,6 +7,8 @@ import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.os.HandlerThread
 import android.provider.ContactsContract
 import android.view.LayoutInflater
 import android.view.View
@@ -60,12 +62,16 @@ class ContactsFragment : Fragment() {
         ContactAdapter(onItemClickListener)
     }
 
+    private var handlerThread: HandlerThread? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentContactsBinding.inflate(inflater, container, false)
+        handlerThread = HandlerThread("Contacts HT")
+        handlerThread?.start()
         return binding.root
     }
 
@@ -78,6 +84,8 @@ class ContactsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        handlerThread?.quitSafely()
+        handlerThread = null
     }
 
     override fun onRequestPermissionsResult(
@@ -156,32 +164,37 @@ class ContactsFragment : Fragment() {
         context?.let { context ->
             val contentResolver = context.contentResolver
 
-            val contactsCursor: Cursor? = contentResolver.query(
-                ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                null,
-                null,
-                null,
-                ContactsContract.Contacts.DISPLAY_NAME
-            )
+            handlerThread?.let { handlerThread ->
+                Handler(handlerThread.looper).post {
+                    val contactsCursor: Cursor? = contentResolver.query(
+                        ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                        null,
+                        null,
+                        null,
+                        ContactsContract.Contacts.DISPLAY_NAME
+                    )
 
-            contactsCursor?.let { cursor ->
-                val contacts = ArrayList<Contact>()
-                for (i in 0..cursor.count) {
-                    if (cursor.moveToPosition(i)) {
-                        val name = cursor.getString(
-                            cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
-                        )
-                        val phoneNumber = cursor.getString(
-                            cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
-                        )
-                        contacts.add(
-                            Contact(name, phoneNumber)
-                        )
+                    contactsCursor?.let { cursor ->
+                        val contacts = ArrayList<Contact>()
+                        for (i in 0..cursor.count) {
+                            if (cursor.moveToPosition(i)) {
+                                val name = cursor.getString(
+                                    cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
+                                )
+                                val phoneNumber = cursor.getString(
+                                    cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
+                                )
+                                contacts.add(
+                                    Contact(name, phoneNumber)
+                                )
+                            }
+                        }
+
+                        adapter.setData(contacts)
                     }
                 }
-
-                adapter.setData(contacts)
             }
+
         }
     }
 }
