@@ -190,7 +190,9 @@ class ContactsFragment : Fragment() {
                             }
                         }
 
-                        adapter.setData(contacts)
+                        binding.rvContacts.post {
+                            adapter.setData(contacts)
+                        }
                     }
                 }
             }
