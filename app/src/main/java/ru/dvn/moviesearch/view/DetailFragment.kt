@@ -101,10 +101,6 @@ class DetailFragment : Fragment() {
 
     }
 
-    override fun onStart() {
-        super.onStart()
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -126,16 +122,9 @@ class DetailFragment : Fragment() {
         when (item.itemId) {
             R.id.menu_item_note_add -> {
                 arguments?.let { args ->
-                    activity?.let { activity ->
-                        activity.supportFragmentManager
-                            .beginTransaction()
-                            .replace(R.id.fragment_host, NoteEditFragment.newInstance(args.getLong(
-                                EXTRA_MOVIE_ID)))
-                            .addToBackStack(null)
-                            .commit()
-
-                        true
-                    }
+                    activity?.supportFragmentManager?.beginTransaction()
+                        ?.replace(R.id.fragment_host, NoteEditFragment.newInstance(args.getLong(
+                            EXTRA_MOVIE_ID)))?.addToBackStack(null)?.commit()
                 }
             }
         }

@@ -10,9 +10,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
 import android.provider.ContactsContract
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -69,6 +67,7 @@ class ContactsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        setHasOptionsMenu(true)
         _binding = FragmentContactsBinding.inflate(inflater, container, false)
         handlerThread = HandlerThread("Contacts HT")
         handlerThread?.start()
@@ -86,6 +85,11 @@ class ContactsFragment : Fragment() {
         _binding = null
         handlerThread?.quitSafely()
         handlerThread = null
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        menu.findItem(R.id.item_contacts).isVisible = false
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onRequestPermissionsResult(

@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity() {
                     .commit()
             }
         }
-        return true
+        return super.onOptionsItemSelected(item)
     }
 
     private fun createHomeFragment() {

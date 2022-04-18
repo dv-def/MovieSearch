@@ -4,5 +4,7 @@
     <item
         android:id="@+id/item_contacts"
         android:title="@string/contacts"
-        app:showAsAction="never"/>
+        android:icon="@drawable/ic_baseline_account_box"
+        android:orderInCategory="3"
+        app:showAsAction="ifRoom"/>
 </menu>
