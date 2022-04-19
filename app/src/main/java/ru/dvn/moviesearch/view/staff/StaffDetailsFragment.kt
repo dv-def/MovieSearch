@@ -150,7 +150,7 @@ class StaffDetailsFragment : Fragment() {
             } ?: run { fragmentStaffDetailsTvFacts.visibility = View.GONE }
 
             if (!staffDetails.films.isNullOrEmpty()) {
-                filmsAdapter.setData(staffDetails.films.toMutableSet().distinctBy { it.nameRu })
+                filmsAdapter.setData(staffDetails.films.distinctBy { it.nameRu })
 
                 fragmentStaffDetailsRvFilms.apply {
                     adapter = filmsAdapter
