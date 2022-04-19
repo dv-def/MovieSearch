@@ -3,6 +3,7 @@ package ru.dvn.moviesearch.model.staff.details
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ru.dvn.moviesearch.R
@@ -59,6 +60,10 @@ class StaffFilmListAdapter(
 
                 film.filmId?.let { id ->
                     setOnClickListener {
+                        onFilmClickListener.onClickFilm(id)
+                    }
+
+                    findViewById<ImageButton>(R.id.btn_arrow).setOnClickListener {
                         onFilmClickListener.onClickFilm(id)
                     }
                 }
