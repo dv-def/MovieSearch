@@ -5,7 +5,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Path
 
-interface DetailsApi {
+interface MovieDetailsApi {
     @GET("api/v2.2/films/{id}")
     fun getFilmDetail(
         @Header("X-API-KEy") key: String,

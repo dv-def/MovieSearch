@@ -35,4 +35,11 @@
     <string name="agree_call">Подтвердите звонок</string>
     <string name="will_call_to_number">Будет совершен звонок на номер\n</string>
     <string name="do_call">Позвонить</string>
+    <string name="back">Назад</string>
+    <string name="show_staff">Показать актерский состав</string>
+    <string name="birthplace">Место рождения</string>
+    <string name="birthday">Дата рождения</string>
+    <string name="deathday">Дата смерти</string>
+    <string name="deathplace">Место смерти</string>
+    <string name="show_film_list">Список фильмов</string>
 </resources>

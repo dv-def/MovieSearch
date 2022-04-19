@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -11,6 +12,7 @@ import ru.dvn.moviesearch.R
 import ru.dvn.moviesearch.databinding.FragmentHistoryBinding
 import ru.dvn.moviesearch.model.AppState
 import ru.dvn.moviesearch.model.history.HistoryAdapter
+import ru.dvn.moviesearch.view.movies.DetailFragment
 import ru.dvn.moviesearch.viewmodel.HistoryViewModel
 
 class HistoryFragment : Fragment() {
@@ -61,6 +63,11 @@ class HistoryFragment : Fragment() {
         }
 
         requestHistory()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        (activity as AppCompatActivity).supportActionBar?.show()
     }
 
     override fun onDestroyView() {

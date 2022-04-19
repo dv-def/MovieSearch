@@ -18,7 +18,7 @@ class DetailsViewModel : ViewModel() {
         override fun onResponse(call: Call<MovieDetailDto>, response: Response<MovieDetailDto>) {
             val serverResponse = response.body()
             if (response.isSuccessful && serverResponse != null) {
-                liveData.postValue(AppState.SuccessDetails(serverResponse))
+                liveData.postValue(AppState.SuccessMovieDetails(serverResponse))
             } else {
                 liveData.postValue(AppState.Error(Exception("Server Error")))
             }

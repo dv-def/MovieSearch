@@ -9,7 +9,7 @@ import com.squareup.picasso.Picasso
 import ru.dvn.moviesearch.R
 import ru.dvn.moviesearch.databinding.MovieItemBinding
 import ru.dvn.moviesearch.model.movie.list.remote.FilmDTO
-import ru.dvn.moviesearch.view.HomeFragment
+import ru.dvn.moviesearch.view.movies.HomeFragment
 import java.util.ArrayList
 
 class MovieAdapter(

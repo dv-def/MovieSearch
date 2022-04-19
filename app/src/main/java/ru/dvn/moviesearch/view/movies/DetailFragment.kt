@@ -1,4 +1,4 @@
-package ru.dvn.moviesearch.view
+package ru.dvn.moviesearch.view.movies
 
 import android.content.Context
 import android.os.Build
@@ -8,6 +8,7 @@ import android.os.HandlerThread
 import android.view.*
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -22,6 +23,9 @@ import ru.dvn.moviesearch.model.movie.detail.remote.GenreDto
 import ru.dvn.moviesearch.model.movie.detail.remote.MovieDetailDto
 import ru.dvn.moviesearch.model.note.recycler.NoteAdapter
 import ru.dvn.moviesearch.utils.getCurrentDate
+import ru.dvn.moviesearch.view.NOTES_SETTINGS_KEY
+import ru.dvn.moviesearch.view.NoteEditFragment
+import ru.dvn.moviesearch.view.staff.StaffFragment
 import ru.dvn.moviesearch.viewmodel.DetailsViewModel
 import ru.dvn.moviesearch.viewmodel.HistoryViewModel
 import ru.dvn.moviesearch.viewmodel.NotesViewModel
@@ -98,7 +102,11 @@ class DetailFragment : Fragment() {
         } else {
             binding.rvNotes.visibility = View.GONE
         }
+    }
 
+    override fun onStart() {
+        super.onStart()
+        (activity as AppCompatActivity).supportActionBar?.show()
     }
 
     override fun onDestroyView() {
@@ -123,8 +131,12 @@ class DetailFragment : Fragment() {
             R.id.menu_item_note_add -> {
                 arguments?.let { args ->
                     activity?.supportFragmentManager?.beginTransaction()
-                        ?.replace(R.id.fragment_host, NoteEditFragment.newInstance(args.getLong(
-                            EXTRA_MOVIE_ID)))?.addToBackStack(null)?.commit()
+                        ?.replace(R.id.fragment_host, NoteEditFragment.newInstance(
+                            args.getLong(
+                                EXTRA_MOVIE_ID
+                            )
+                        )
+                        )?.addToBackStack(null)?.commit()
                 }
             }
         }
@@ -166,7 +178,7 @@ class DetailFragment : Fragment() {
 
     private fun renderDetails(appState: AppState) {
         when (appState) {
-            is AppState.SuccessDetails -> {
+            is AppState.SuccessMovieDetails -> {
                 binding.detailsLoadingLayout.visibility = View.GONE
                 binding.detailsMainLayout.visibility = View.VISIBLE
                 showMovie(appState.movie)
@@ -267,6 +279,8 @@ class DetailFragment : Fragment() {
                     .error(R.drawable.default_poster)
                     .into(binding.poster)
             }
+
+            initShowStaffButton()
         }
     }
 
@@ -301,6 +315,19 @@ class DetailFragment : Fragment() {
                 Toast.makeText(context, appState.message, Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun initShowStaffButton() {
+        arguments?.getLong(EXTRA_MOVIE_ID)?.let { filmId ->
+            binding.btnShowStaff.setOnClickListener {
+                activity?.supportFragmentManager
+                    ?.beginTransaction()
+                    ?.replace(R.id.fragment_host, StaffFragment.newInstance(filmId))
+                    ?.addToBackStack(null)
+                    ?.commit()
+            }
+        }
+
     }
 
     private fun List<GenreDto>.str(): String {

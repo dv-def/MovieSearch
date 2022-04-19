@@ -12,6 +12,7 @@ import android.os.HandlerThread
 import android.provider.ContactsContract
 import android.view.*
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import ru.dvn.moviesearch.R
@@ -78,6 +79,11 @@ class ContactsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.rvContacts.adapter = adapter
         checkPermissions()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        (activity as AppCompatActivity).supportActionBar?.show()
     }
 
     override fun onDestroyView() {

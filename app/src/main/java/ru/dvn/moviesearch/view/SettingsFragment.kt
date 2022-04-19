@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import ru.dvn.moviesearch.databinding.FragmentSettingsBinding
 
@@ -42,6 +43,11 @@ class SettingsFragment : Fragment() {
                 it.supportFragmentManager.popBackStack()
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        (activity as AppCompatActivity).supportActionBar?.show()
     }
 
     override fun onDestroy() {

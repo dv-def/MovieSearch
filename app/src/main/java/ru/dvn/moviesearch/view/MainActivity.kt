@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuItem
 import ru.dvn.moviesearch.R
 import ru.dvn.moviesearch.databinding.ActivityMainBinding
+import ru.dvn.moviesearch.view.movies.HomeFragment
 
 class MainActivity : AppCompatActivity() {
     private val binding: ActivityMainBinding by lazy {

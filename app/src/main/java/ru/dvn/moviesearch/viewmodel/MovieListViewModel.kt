@@ -21,7 +21,7 @@ class MovieListViewModel : ViewModel() {
         override fun onResponse(call: Call<MovieListDto>, response: Response<MovieListDto>) {
             val serverResponse = response.body()
             if (response.isSuccessful && serverResponse != null) {
-                topBestLiveData.postValue(AppState.SuccessList(serverResponse))
+                topBestLiveData.postValue(AppState.SuccessMovieList(serverResponse))
             } else {
                 topBestLiveData.postValue(AppState.Error(Exception("Server Error")))
             }
@@ -36,7 +36,7 @@ class MovieListViewModel : ViewModel() {
         override fun onResponse(call: Call<MovieListDto>, response: Response<MovieListDto>) {
             val serverResponse = response.body()
             if (response.isSuccessful && serverResponse != null) {
-                topAwaitLiveData.postValue(AppState.SuccessList(serverResponse))
+                topAwaitLiveData.postValue(AppState.SuccessMovieList(serverResponse))
             } else {
                 topAwaitLiveData.postValue(AppState.Error(Exception("Server Error")))
             }

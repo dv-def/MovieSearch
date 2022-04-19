@@ -1,9 +1,10 @@
-package ru.dvn.moviesearch.view
+package ru.dvn.moviesearch.view.movies
 
 import android.os.Build
 import android.os.Bundle
 import android.view.*
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
@@ -59,6 +60,11 @@ class HomeFragment : Fragment() {
 
         initTopBestMoviesBlock()
         initTopAwaitMoviesBlock()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        (activity as AppCompatActivity).supportActionBar?.show()
     }
 
     override fun onDestroyView() {
@@ -135,7 +141,7 @@ class HomeFragment : Fragment() {
 
     private fun renderTopBestData(appState: AppState) {
         when (appState) {
-            is AppState.SuccessList -> {
+            is AppState.SuccessMovieList -> {
                 binding.topBestLoading.root.visibility = View.GONE
                 binding.topBestMainLayout.visibility = View.VISIBLE
                 appState.movies.films?.let {
@@ -156,7 +162,7 @@ class HomeFragment : Fragment() {
 
     private fun renderTopAwait(appState: AppState) {
         when (appState) {
-            is AppState.SuccessList -> {
+            is AppState.SuccessMovieList -> {
                 binding.topAwaitLoading.root.visibility = View.GONE
                 binding.topAwaitMainLayout.visibility = View.VISIBLE
                 appState.movies.films?.let {

@@ -98,6 +98,15 @@
                 android:layout_margin="@dimen/default_margin"
                 android:textSize="@dimen/detail_movie_default_text_size" />
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_show_staff"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/show_staff"
+                android:layout_gravity="center"
+                android:textAllCaps="false"
+                android:layout_marginTop="@dimen/default_margin"/>
+
         </LinearLayout>
 
         <LinearLayout

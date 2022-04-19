@@ -14,9 +14,8 @@ import ru.dvn.moviesearch.databinding.FragmentNoteEditBinding
 import ru.dvn.moviesearch.model.AppState
 import ru.dvn.moviesearch.model.note.local.NoteEntity
 import ru.dvn.moviesearch.utils.getCurrentDate
+import ru.dvn.moviesearch.view.movies.DetailFragment
 import ru.dvn.moviesearch.viewmodel.NotesViewModel
-import java.text.SimpleDateFormat
-import java.util.*
 
 class NoteEditFragment : Fragment() {
     companion object {
