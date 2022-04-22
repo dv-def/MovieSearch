@@ -1,6 +1,9 @@
 package ru.dvn.moviesearch.view.staff
 
+import android.location.Geocoder
 import android.os.Bundle
+import android.text.SpannableString
+import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,8 +17,10 @@ import com.squareup.picasso.Picasso
 import ru.dvn.moviesearch.R
 import ru.dvn.moviesearch.databinding.FragmentStaffDetailsBinding
 import ru.dvn.moviesearch.model.AppState
+import ru.dvn.moviesearch.model.staff.details.Place
 import ru.dvn.moviesearch.model.staff.details.StaffDetailsDto
 import ru.dvn.moviesearch.model.staff.details.StaffFilmListAdapter
+import ru.dvn.moviesearch.view.MapsFragment
 import ru.dvn.moviesearch.view.movies.DetailFragment
 import ru.dvn.moviesearch.viewmodel.StaffViewModel
 
@@ -132,14 +137,42 @@ class StaffDetailsFragment : Fragment() {
                 fragmentStaffDetailsTvDates.visibility = View.GONE
             }
 
-            staffDetails.birthplace?.let {
-                val text = "${requireContext().getString(R.string.birthplace)}: $it"
-                fragmentStaffDetailsTvBirthplace.text = text
+            staffDetails.birthplace?.let { birthplace ->
+                Thread {
+                    val place = createPlaceWithCoordinates(birthplace)
+
+                    fragmentStaffDetailsTvBirthplace.post {
+                        val text = SpannableString("${requireContext().getString(R.string.birthplace)}: $birthplace")
+                        text.setSpan(UnderlineSpan(), 0, text.length, 0)
+                        fragmentStaffDetailsTvBirthplace.text = text
+
+                        fragmentStaffDetailsTvBirthplace.setOnClickListener {
+                            openMapsFragment(place)
+                        }
+
+                        fragmentStaffDetailsTvBirthplace.visibility = View.VISIBLE
+                    }
+                }.start()
+
             } ?: run { fragmentStaffDetailsTvBirthplace.visibility = View.GONE }
 
-            staffDetails.deathplace?.let {
-                val text = "${requireContext().getString(R.string.deathplace)}: $it"
-                fragmentStaffDetailsTvDeathplace.text = text
+            staffDetails.deathplace?.let { deathplace ->
+                Thread {
+                    val place = createPlaceWithCoordinates(deathplace)
+
+                    fragmentStaffDetailsTvDeathplace.post {
+                        val text = SpannableString("${requireContext().getString(R.string.deathplace)}: $deathplace")
+                        text.setSpan(UnderlineSpan(), 0, text.length, 0)
+                        fragmentStaffDetailsTvDeathplace.text = text
+
+                        fragmentStaffDetailsTvDeathplace.setOnClickListener {
+                            openMapsFragment(place)
+                        }
+
+                        fragmentStaffDetailsTvDeathplace.visibility = View.VISIBLE
+                    }
+
+                }.start()
             } ?: run { fragmentStaffDetailsTvDeathplace.visibility = View.GONE }
 
             staffDetails.facts?.let {
@@ -174,5 +207,22 @@ class StaffDetailsFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun createPlaceWithCoordinates(placeName: String): Place {
+        val geocoder = Geocoder(context)
+        val result = geocoder.getFromLocationName(placeName, 1)[0]
+        val lat = result.latitude
+        val lon = result.longitude
+
+        return Place(lat, lon, placeName)
+    }
+
+    private fun openMapsFragment(place: Place) {
+        activity?.supportFragmentManager
+            ?.beginTransaction()
+            ?.replace(R.id.fragment_host, MapsFragment.newInstance(place))
+            ?.addToBackStack(null)
+            ?.commit()
     }
 }
