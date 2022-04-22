@@ -40,7 +40,7 @@ class SettingsFragment : Fragment() {
                     )
                     .apply()
 
-                it.supportFragmentManager.popBackStack()
+                it.supportFragmentManager.popBackStackImmediate()
             }
         }
     }
