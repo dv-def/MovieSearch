@@ -75,7 +75,9 @@ class MovieAdapter(
         fun bind(filmDTO: FilmDTO) {
             with(binding) {
                 itemName.text = filmDTO.nameRu
-                itemYear.text = filmDTO.year.toString()
+                filmDTO.year?.let {
+                    itemYear.text = it.toString()
+                }
                 itemRating.text = filmDTO.rating
 
                 Picasso.get()
