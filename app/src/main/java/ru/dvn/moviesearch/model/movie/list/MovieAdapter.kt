@@ -10,10 +10,11 @@ import ru.dvn.moviesearch.R
 import ru.dvn.moviesearch.databinding.MovieItemBinding
 import ru.dvn.moviesearch.model.movie.list.remote.FilmDTO
 import ru.dvn.moviesearch.view.movies.HomeFragment
+import ru.dvn.moviesearch.view.movies.MovieListFragment
 import java.util.ArrayList
 
 class MovieAdapter(
-    private var onMovieClickListener: HomeFragment.OnMovieClickListener?
+    private var onMovieClickListener: MovieListFragment.OnMovieClickListener?
 ) : RecyclerView.Adapter<MovieAdapter.MovieViewHolder>(), Filterable {
     private var movies: ArrayList<FilmDTO> = ArrayList()
     private var moviesFull: ArrayList<FilmDTO> = ArrayList()
@@ -45,7 +46,7 @@ class MovieAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         val binding = MovieItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
-        return MovieViewHolder(binding = binding, onMovieClickListener = onMovieClickListener)
+        return MovieViewHolder(binding = binding)
     }
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
@@ -67,9 +68,8 @@ class MovieAdapter(
         onMovieClickListener = null
     }
 
-    class MovieViewHolder(
+    inner class MovieViewHolder(
         val binding: MovieItemBinding,
-        val onMovieClickListener: HomeFragment.OnMovieClickListener?
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(filmDTO: FilmDTO) {

@@ -42,4 +42,5 @@
     <string name="deathday">Дата смерти</string>
     <string name="deathplace">Место смерти</string>
     <string name="show_film_list">Список фильмов</string>
+    <string name="movie_name">Название фильма</string>
 </resources>

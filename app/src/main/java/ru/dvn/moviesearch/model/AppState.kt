@@ -8,7 +8,6 @@ import ru.dvn.moviesearch.model.staff.details.StaffDetailsDto
 import ru.dvn.moviesearch.model.staff.list.StaffDto
 
 sealed class AppState {
-    data class SuccessMovieList(val movies: MovieListDto) : AppState()
     data class SuccessMovieDetails(val movie: MovieDetailDto) : AppState()
     data class SuccessStaff(val staff: List<StaffDto>): AppState()
     data class SuccessStaffDetails(val staffDetails: StaffDetailsDto): AppState()
