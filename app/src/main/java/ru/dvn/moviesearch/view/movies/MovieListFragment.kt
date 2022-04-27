@@ -66,7 +66,7 @@ class MovieListFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.tvTopName.text = arguments?.getString(EXTRA_TITLE)
+        binding.search.queryHint = arguments?.getString(EXTRA_TITLE)
         binding.search.setOnQueryTextListener(object: SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
