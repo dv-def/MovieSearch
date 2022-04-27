@@ -74,7 +74,6 @@ class MovieListFragment : Fragment() {
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 movieAdapter.filter.filter(newText)
-
                 return true
             }
         })

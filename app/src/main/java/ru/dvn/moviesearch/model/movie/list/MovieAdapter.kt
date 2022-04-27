@@ -27,7 +27,7 @@ class MovieAdapter(
             } else {
                 val search = text.toString().lowercase().trim()
                 result.addAll(moviesFull.filter {
-                    it.nameRu?.contains(search) == true
+                    it.nameRu?.lowercase()?.contains(search) == true
                 })
             }
 
