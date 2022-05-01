@@ -44,4 +44,5 @@
     <string name="show_film_list">Список фильмов</string>
     <string name="movie_name">Название фильма</string>
     <string name="no_histiry">В истории пока что нет ни одной записи</string>
+    <string name="contacts_error">Не удалось загрузить контакты</string>
 </resources>

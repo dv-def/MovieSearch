@@ -1,29 +1,37 @@
 package ru.dvn.moviesearch.view.contacts
 
 import android.Manifest
-import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
-import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.HandlerThread
-import android.provider.ContactsContract
 import android.view.*
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import ru.dvn.moviesearch.R
 import ru.dvn.moviesearch.databinding.FragmentContactsBinding
 import ru.dvn.moviesearch.model.contacts.Contact
 import ru.dvn.moviesearch.model.contacts.ContactAdapter
+import ru.dvn.moviesearch.service.ContactsService
 import java.util.ArrayList
 
 class ContactsFragment : Fragment() {
     companion object {
         private const val REQUEST_CONTACT_ACCESS = 101
+
+        const val EXTRA_CONTACTS_KEY = "EXTRA_CONTACTS_KEY"
+        const val BROADCAST_INTENT_ACTION = "ru.dvn.moviesearch.view.contacts.GET_CONTACTS"
+
+        const val EXTRA_STATE_KEY = "EXTRA_STATE_KEY"
+        const val STATE_SUCCESS = "success"
+        const val STATE_ERROR = "error"
 
         fun newInstance() = ContactsFragment()
     }
@@ -61,12 +69,39 @@ class ContactsFragment : Fragment() {
         ContactAdapter(onItemClickListener)
     }
 
+    private val contactsReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            intent.extras?.let { extras ->
+                val state = extras.getString(EXTRA_STATE_KEY, STATE_ERROR)
+                if (state == STATE_SUCCESS) {
+                    val contacts =
+                        extras.getParcelableArrayList<Contact>(EXTRA_CONTACTS_KEY) as ArrayList<Contact>
+
+                    if (contacts.isNotEmpty()) {
+                        binding.loadingLayout.root.visibility = View.GONE
+                        binding.rvContacts.visibility = View.VISIBLE
+
+                        adapter.setData(contacts)
+                    } else {
+                        Toast.makeText(context, R.string.contacts_error, Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(context, R.string.contacts_error, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         setHasOptionsMenu(true)
+
+        LocalBroadcastManager.getInstance(requireContext())
+            .registerReceiver(contactsReceiver, IntentFilter(BROADCAST_INTENT_ACTION))
+
         _binding = FragmentContactsBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -85,6 +120,7 @@ class ContactsFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        LocalBroadcastManager.getInstance(requireContext()).unregisterReceiver(contactsReceiver)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -163,40 +199,11 @@ class ContactsFragment : Fragment() {
         )
     }
 
-    @SuppressLint("Range")
     private fun getContacts() {
-        context?.let { context ->
-            val contentResolver = context.contentResolver
-            Thread {
-                val contactsCursor: Cursor? = contentResolver.query(
-                    ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                    null,
-                    null,
-                    null,
-                    ContactsContract.Contacts.DISPLAY_NAME
-                )
-
-                contactsCursor?.let { cursor ->
-                    val contacts = ArrayList<Contact>()
-                    for (i in 0..cursor.count) {
-                        if (cursor.moveToPosition(i)) {
-                            val name = cursor.getString(
-                                cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
-                            )
-                            val phoneNumber = cursor.getString(
-                                cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
-                            )
-                            contacts.add(
-                                Contact(name, phoneNumber)
-                            )
-                        }
-                    }
-
-                    binding.rvContacts.post {
-                        adapter.setData(contacts)
-                    }
-                }
-            }.start()
+        activity?.let {
+            binding.loadingLayout.root.visibility = View.VISIBLE
+            binding.rvContacts.visibility = View.GONE
+            it.startService(Intent(it, ContactsService::class.java))
         }
     }
 }
