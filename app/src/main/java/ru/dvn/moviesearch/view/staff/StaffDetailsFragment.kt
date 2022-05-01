@@ -13,21 +13,22 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.snackbar.Snackbar
 import com.squareup.picasso.Picasso
 import ru.dvn.moviesearch.R
 import ru.dvn.moviesearch.databinding.FragmentStaffDetailsBinding
-import ru.dvn.moviesearch.model.AppState
-import ru.dvn.moviesearch.model.staff.details.Place
-import ru.dvn.moviesearch.model.staff.details.StaffDetailsDto
-import ru.dvn.moviesearch.model.staff.details.StaffFilmListAdapter
-import ru.dvn.moviesearch.view.MapsFragment
+import ru.dvn.moviesearch.model.staff.remote.StaffDetailsState
+import ru.dvn.moviesearch.model.staff.remote.details.Place
+import ru.dvn.moviesearch.model.staff.remote.details.StaffDetailsDto
+import ru.dvn.moviesearch.model.staff.remote.details.StaffFilmListAdapter
+import ru.dvn.moviesearch.view.maps.MapsFragment
 import ru.dvn.moviesearch.view.movies.DetailFragment
-import ru.dvn.moviesearch.viewmodel.StaffViewModel
-
-private const val EXTRA_PERSON_ID = "EXTRA_PERSON_ID"
+import ru.dvn.moviesearch.viewmodel.staff.StaffDetailsViewModel
 
 class StaffDetailsFragment : Fragment() {
     companion object {
+        private const val EXTRA_PERSON_ID = "EXTRA_PERSON_ID"
+
         fun newInstance(personId: Long): StaffDetailsFragment {
             return StaffDetailsFragment().apply {
                 arguments = Bundle().apply {
@@ -44,8 +45,8 @@ class StaffDetailsFragment : Fragment() {
     private var _binding: FragmentStaffDetailsBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: StaffViewModel by lazy {
-        ViewModelProvider(this).get(StaffViewModel::class.java)
+    private val detailsViewModel: StaffDetailsViewModel by lazy {
+        ViewModelProvider(this).get(StaffDetailsViewModel::class.java)
     }
 
     private val onFilmClickListener = object : OnPersonFilmClickListener {
@@ -77,12 +78,12 @@ class StaffDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getLiveData().observe(viewLifecycleOwner) {
+        detailsViewModel.liveData.observe(viewLifecycleOwner) {
             renderData(it)
         }
 
         arguments?.getLong(EXTRA_PERSON_ID)?.let { personId ->
-            viewModel.getStaffDetails(personId)
+            detailsViewModel.getStaffDetails(personId)
         }
     }
 
@@ -91,16 +92,27 @@ class StaffDetailsFragment : Fragment() {
         _binding = null
     }
 
-    private fun renderData(appState: AppState) {
-        when (appState) {
-            is AppState.SuccessStaffDetails -> {
+    private fun renderData(state: StaffDetailsState) {
+        when (state) {
+            is StaffDetailsState.Success -> {
                 binding.loadingLayout.root.visibility = View.GONE
                 binding.mainLayout.visibility = View.VISIBLE
-                showInfo(appState.staffDetails)
+                showInfo(state.staffDetails)
             }
-            is AppState.Loading -> {
+            is StaffDetailsState.Loading -> {
                 binding.mainLayout.visibility = View.GONE
                 binding.loadingLayout.root.visibility = View.VISIBLE
+            }
+            is StaffDetailsState.Error -> {
+                Snackbar.make(
+                    requireContext(),
+                    binding.mainLayout,
+                    state.message,
+                    Snackbar.LENGTH_INDEFINITE
+                ).setAction(
+                    R.string.back
+                ) { activity?.supportFragmentManager?.popBackStack() }
+                    .show()
             }
         }
     }
@@ -187,8 +199,16 @@ class StaffDetailsFragment : Fragment() {
 
                 fragmentStaffDetailsRvFilms.apply {
                     adapter = filmsAdapter
-                    layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-                    addItemDecoration(DividerItemDecoration(this.context, DividerItemDecoration.VERTICAL))
+                    layoutManager = LinearLayoutManager(
+                        requireContext(),
+                        LinearLayoutManager.VERTICAL,
+                        false)
+                    addItemDecoration(
+                        DividerItemDecoration(
+                            this.context,
+                            DividerItemDecoration.VERTICAL
+                        )
+                    )
                 }
 
                 btnFilms.visibility = View.VISIBLE

@@ -7,7 +7,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import ru.dvn.moviesearch.R
-import ru.dvn.moviesearch.model.movie.list.remote.TopParam
+import ru.dvn.moviesearch.model.movie.remote.list.TopParam
 
 class HomeFragment : Fragment() {
     companion object {

@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import ru.dvn.moviesearch.R
-import ru.dvn.moviesearch.view.ContactsFragment
+import ru.dvn.moviesearch.view.contacts.ContactsFragment
 import java.util.ArrayList
 
 class ContactAdapter(
@@ -46,8 +46,6 @@ class ContactAdapter(
                     listener.doCall(phoneNumber)
                 }
             }
-
-
         }
     }
 }

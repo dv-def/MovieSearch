@@ -6,7 +6,10 @@ import android.view.Menu
 import android.view.MenuItem
 import ru.dvn.moviesearch.R
 import ru.dvn.moviesearch.databinding.ActivityMainBinding
+import ru.dvn.moviesearch.view.contacts.ContactsFragment
+import ru.dvn.moviesearch.view.history.HistoryFragment
 import ru.dvn.moviesearch.view.movies.HomeFragment
+import ru.dvn.moviesearch.view.settings.SettingsFragment
 
 class MainActivity : AppCompatActivity() {
     private val binding: ActivityMainBinding by lazy {

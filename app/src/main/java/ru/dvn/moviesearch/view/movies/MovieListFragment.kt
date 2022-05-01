@@ -10,16 +10,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import ru.dvn.moviesearch.R
 import ru.dvn.moviesearch.databinding.FragmentMovieListBinding
-import ru.dvn.moviesearch.model.movie.MovieListDataState
-import ru.dvn.moviesearch.model.movie.list.MovieAdapter
-import ru.dvn.moviesearch.model.movie.list.remote.TopParam
-import ru.dvn.moviesearch.viewmodel.MovieListViewModel
-
-private const val EXTRA_TITLE = "EXTRA_TITLE"
-private const val EXTRA_TOP_PARAM = "EXTRA_TOP_PARAM"
+import ru.dvn.moviesearch.model.movie.remote.list.MovieListDataState
+import ru.dvn.moviesearch.model.movie.remote.list.MovieAdapter
+import ru.dvn.moviesearch.model.movie.remote.list.TopParam
+import ru.dvn.moviesearch.viewmodel.movies.MovieListViewModel
 
 class MovieListFragment : Fragment() {
     companion object {
+        private const val EXTRA_TITLE = "EXTRA_TITLE"
+        private const val EXTRA_TOP_PARAM = "EXTRA_TOP_PARAM"
+
         fun newInstance(title: String?, topParam: String): MovieListFragment {
             val args = Bundle().apply {
                 putString(EXTRA_TITLE, title)
