@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
             Snackbar
                 .make(binding.root, R.string.free_version, Snackbar.LENGTH_INDEFINITE)
                 .setAction(R.string.try_paid) {
-                    Toast.makeText(this, R.string.padi_magic, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, R.string.paid_magic, Toast.LENGTH_SHORT).show()
                 }
                 .show()
         }
