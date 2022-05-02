@@ -42,6 +42,21 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    flavorDimensions 'version'
+
+    productFlavors {
+        free {
+            dimension 'version'
+            versionNameSuffix '-free'
+        }
+
+        paid {
+            dimension 'version'
+            versionNameSuffix '-paid'
+        }
+    }
+
     kotlinOptions {
         jvmTarget = '1.8'
     }
