@@ -11,4 +11,13 @@
 
     <dimen name="detail_movie_name_text_size">28sp</dimen>
     <dimen name="detail_movie_default_text_size">16sp</dimen>
+    <dimen name="bnt_save_margin">8dp</dimen>
+    <dimen name="settings_padding">4dp</dimen>
+    <dimen name="note_title">18sp</dimen>
+    <dimen name="card_content_padding">8dp</dimen>
+    <dimen name="note_text">18sp</dimen>
+    <dimen name="history_movie_name">20sp</dimen>
+    <dimen name="history_text_margin">16dp</dimen>
+    <dimen name="contact_name_text_size">18sp</dimen>
+    <dimen name="contact_number_text_size">16sp</dimen>
 </resources>

@@ -1,41 +1,39 @@
 package ru.dvn.moviesearch.view
 
-import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.os.Handler
+import android.os.HandlerThread
+import android.view.*
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
+import com.squareup.picasso.Picasso
 import ru.dvn.moviesearch.R
 import ru.dvn.moviesearch.databinding.FragmentDetailBinding
-import ru.dvn.moviesearch.model.movie.detail.DetailService
-import ru.dvn.moviesearch.model.movie.detail.EXTRA_DETAIL_ID
-import ru.dvn.moviesearch.model.movie.detail.GenreDto
-import ru.dvn.moviesearch.model.movie.detail.MovieDetailDto
+import ru.dvn.moviesearch.model.AppState
+import ru.dvn.moviesearch.model.history.HistoryEntity
+import ru.dvn.moviesearch.model.movie.detail.remote.GenreDto
+import ru.dvn.moviesearch.model.movie.detail.remote.MovieDetailDto
+import ru.dvn.moviesearch.model.note.recycler.NoteAdapter
+import ru.dvn.moviesearch.utils.getCurrentDate
+import ru.dvn.moviesearch.viewmodel.DetailsViewModel
+import ru.dvn.moviesearch.viewmodel.HistoryViewModel
+import ru.dvn.moviesearch.viewmodel.NotesViewModel
 import java.lang.StringBuilder
-
-const val EXTRA_DETAIL_STATUS = "EXTRA_DETAIL_STATUS"
-const val EXTRA_DETAIL_STATUS_SUCCESS = "EXTRA_DETAIL_STATUS_SUCCESS"
-const val EXTRA_DETAIL_STATUS_ERROR = "EXTRA_DETAIL_STATUS_ERROR"
-
-const val EXTRA_DETAIL = "EXTRA_DETAIL"
-
-const val EXTRA_DETAIL_ACTION = "EXTRA_DETAIL_ACTION"
 
 class DetailFragment : Fragment() {
     companion object {
         const val EXTRA_MOVIE_ID = "EXTRA_MOVIE_ID"
-        fun newInstance(movieId: Int): DetailFragment {
+        fun newInstance(movieId: Long): DetailFragment {
             val fragment = DetailFragment().apply {
                 arguments = Bundle().apply {
-                    putInt(EXTRA_MOVIE_ID, movieId)
+                    putLong(EXTRA_MOVIE_ID, movieId)
                 }
             }
 
@@ -46,37 +44,34 @@ class DetailFragment : Fragment() {
     private var _binding: FragmentDetailBinding? = null
     private val binding get() = _binding!!
 
-    private val receiver = object: BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            when(intent.getStringExtra(EXTRA_DETAIL_STATUS)) {
-                EXTRA_DETAIL_STATUS_SUCCESS -> {
-                    intent.getParcelableExtra<MovieDetailDto>(EXTRA_DETAIL)?.let {
-                        showMovie(it)
-                    }
-                }
-
-                EXTRA_DETAIL_STATUS_ERROR -> {
-                    activity?.supportFragmentManager?.popBackStack()
-                    Toast.makeText(context, R.string.detail_error, Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
+    private val detailViewModel: DetailsViewModel by lazy {
+        ViewModelProvider(this).get(DetailsViewModel::class.java)
     }
 
+    private val notesViewModel: NotesViewModel by lazy {
+        ViewModelProvider(this).get(NotesViewModel::class.java)
+    }
+
+    private val historyViewModel: HistoryViewModel by lazy {
+        ViewModelProvider(this).get(HistoryViewModel::class.java)
+    }
+
+    private var handlerThread: HandlerThread? = null
+
+    private val noteAdapter = NoteAdapter()
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        context?.let {
-            LocalBroadcastManager.getInstance(it)
-                .registerReceiver(receiver, IntentFilter(EXTRA_DETAIL_ACTION)
-            )
-        }
         super.onCreate(savedInstanceState)
+        handlerThread = HandlerThread("Database HT")
+        handlerThread?.start()
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
+        setHasOptionsMenu(true)
         _binding = FragmentDetailBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -85,28 +80,140 @@ class DetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        context?.let { context->
-            arguments?.getInt(EXTRA_MOVIE_ID)?.let { id ->
-                context.startService(
-                    Intent(context, DetailService::class.java).apply {
-                        putExtra(EXTRA_DETAIL_ID, id)
-                    }
-                )
-            }
+        detailViewModel.getLiveData().observe(viewLifecycleOwner) {
+            renderDetails(it)
         }
+
+        binding.rvNotes.adapter = noteAdapter
+        setupItemTouchHelper()
+
+        notesViewModel.getLiveData().observe(viewLifecycleOwner) {
+            checkNotesStatus(it)
+        }
+
+        requestDetails()
+        if (activity?.getPreferences(Context.MODE_PRIVATE)?.getBoolean(NOTES_SETTINGS_KEY, false) == true) {
+            binding.rvNotes.visibility = View.VISIBLE
+            requestNotes()
+        } else {
+            binding.rvNotes.visibility = View.GONE
+        }
+
+    }
+
+    override fun onStart() {
+        super.onStart()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+        handlerThread?.quitSafely()
+        handlerThread = null
     }
 
-    override fun onDestroy() {
-        context?.let {
-            LocalBroadcastManager.getInstance(it)
-                .unregisterReceiver(receiver)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_details_fragment, menu)
+        activity?.let {
+            val noteItem = menu.findItem(R.id.menu_item_note_add)
+            noteItem.setVisible(
+                it.getPreferences(Context.MODE_PRIVATE).getBoolean(NOTES_SETTINGS_KEY, false)
+            )
         }
-        super.onDestroy()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_item_note_add -> {
+                arguments?.let { args ->
+                    activity?.let { activity ->
+                        activity.supportFragmentManager
+                            .beginTransaction()
+                            .replace(R.id.fragment_host, NoteEditFragment.newInstance(args.getLong(
+                                EXTRA_MOVIE_ID)))
+                            .addToBackStack(null)
+                            .commit()
+
+                        true
+                    }
+                }
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun setupItemTouchHelper() {
+        val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.Callback() {
+            override fun getMovementFlags(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder
+            ): Int {
+                return makeMovementFlags(0, ItemTouchHelper.START or (ItemTouchHelper.END))
+            }
+
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.adapterPosition
+                handlerThread?.let {
+                    Handler(it.looper).post {
+                        notesViewModel.delete(noteAdapter.getNote(position))
+                        binding.rvNotes.post {
+                            noteAdapter.deleteNote(position)
+                        }
+                    }
+                }
+            }
+        })
+
+        itemTouchHelper.attachToRecyclerView(binding.rvNotes)
+    }
+
+    private fun renderDetails(appState: AppState) {
+        when (appState) {
+            is AppState.SuccessDetails -> {
+                binding.detailsLoadingLayout.visibility = View.GONE
+                binding.detailsMainLayout.visibility = View.VISIBLE
+                showMovie(appState.movie)
+                saveHistory(appState.movie)
+            }
+            is AppState.Error -> {
+                binding.detailsLoadingLayout.visibility = View.GONE
+                binding.detailsMainLayout.visibility = View.GONE
+                Snackbar
+                    .make(binding.detailsMainLayout, R.string.detail_error, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(R.string.try_again) {
+                        requestDetails()
+                    }
+                    .show()
+            }
+            is AppState.Loading -> {
+                binding.detailsLoadingLayout.visibility = View.VISIBLE
+                binding.detailsMainLayout.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun requestDetails() {
+        arguments?.getLong(EXTRA_MOVIE_ID)?.let {
+            detailViewModel.getDetails(it)
+        }
+    }
+
+    private fun requestNotes() {
+        arguments?.getLong(EXTRA_MOVIE_ID)?.let { id ->
+            handlerThread?.let {
+                Handler(it.looper).post() {
+                    notesViewModel.getAllByKinopoiskId(id)
+                }
+            }
+        }
     }
 
     private fun showMovie(movieDetailDto: MovieDetailDto) {
@@ -162,6 +269,47 @@ class DetailFragment : Fragment() {
                 binding.description.text = it
             } ?: run {
                 binding.description.visibility = View.GONE
+            }
+
+            posterUrl?.let {
+                Picasso.get()
+                    .load(it)
+                    .placeholder(R.drawable.loading)
+                    .error(R.drawable.default_poster)
+                    .into(binding.poster)
+            }
+        }
+    }
+
+    private fun saveHistory(movieDetailDto: MovieDetailDto) {
+        handlerThread?.let {
+            val handler = Handler(it.looper)
+            handler.post {
+
+                val history = HistoryEntity(
+                    id = 0,
+                    kinopoiskFilmId = movieDetailDto.kinopoiskId,
+                    movieName = movieDetailDto.nameRu,
+                    moviePoster = movieDetailDto.posterUrlPreview,
+                    date = getCurrentDate()
+                )
+
+                historyViewModel.save(history)
+
+            }
+        }
+    }
+
+    private fun checkNotesStatus(appState: AppState) {
+        when (appState) {
+            is AppState.SuccessNotes -> {
+                noteAdapter.updateNotes(appState.notes)
+            }
+            is AppState.Error -> {
+                Toast.makeText(context, appState.error.message, Toast.LENGTH_SHORT).show()
+            }
+            is AppState.SuccessDML -> {
+                Toast.makeText(context, appState.message, Toast.LENGTH_SHORT).show()
             }
         }
     }

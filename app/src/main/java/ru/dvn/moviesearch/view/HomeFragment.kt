@@ -1,32 +1,20 @@
 package ru.dvn.moviesearch.view
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.annotation.RequiresApi
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.dvn.moviesearch.R
 import ru.dvn.moviesearch.databinding.FragmentHomeBinding
-import ru.dvn.moviesearch.model.movie.MovieAdapter
-import ru.dvn.moviesearch.model.movie.list.*
-
-const val EXTRA_TOP_FILMS_STATUS = "EXTRA_TOP_FILMS_STATUS"
-const val EXTRA_TOP_FILMS_STATUS_SUCCESS = "EXTRA_TOP_FILMS_STATUS_SUCCESS"
-const val EXTRA_TOP_FILMS_STATUS_ERROR = "EXTRA_MOVIE_LIST_ERROR"
-
-const val EXTRA_LOAD_MODE = "EXTRA_LOAD_MODE"
-const val EXTRA_MOVIE_LIST = "EXTRA_MOVIE_LIST"
-
-const val MOVIE_LIST_RECEIVER_ACTION = "MOVIE_LIST_RECEIVER_ACTION"
+import ru.dvn.moviesearch.model.AppState
+import ru.dvn.moviesearch.model.movie.list.MovieAdapter
+import ru.dvn.moviesearch.model.movie.list.remote.MoviesLoadMode
+import ru.dvn.moviesearch.viewmodel.MovieListViewModel
 
 class HomeFragment : Fragment() {
     companion object {
@@ -39,38 +27,12 @@ class HomeFragment : Fragment() {
     private lateinit var topBestMoviesAdapter: MovieAdapter
     private lateinit var topAwaitMoviesAdapter: MovieAdapter
 
-    private val receiver = object: BroadcastReceiver() {
-        @RequiresApi(Build.VERSION_CODES.N)
-        override fun onReceive(context: Context, intent: Intent) {
-            when (intent.getStringExtra(EXTRA_TOP_FILMS_STATUS)) {
-                EXTRA_TOP_FILMS_STATUS_SUCCESS -> {
-                    intent.getParcelableExtra<MovieList>(EXTRA_MOVIE_LIST)?.let {
-                        when (intent.getStringExtra(EXTRA_LOAD_MODE)) {
-                            MoviesLoadMode.TOP_BEST_FILMS.getMode() -> {
-                                showTopBestMovies(it)
-                            }
-                            MoviesLoadMode.TOP_AWAIT_FILMS.getMode() -> {
-                                showTopAwaitMovies(it)
-                            }
-                        }
-                    }
-                }
-                EXTRA_TOP_FILMS_STATUS_ERROR -> {
-                    when (intent.getStringExtra(EXTRA_LOAD_MODE)) {
-                        MoviesLoadMode.TOP_BEST_FILMS.getMode() -> {
-                            showTopBestMoviesError()
-                        }
-                        MoviesLoadMode.TOP_AWAIT_FILMS.getMode() -> {
-                            showTopAwaitMoviesError()
-                        }
-                    }
-                }
-            }
-        }
+    private val viewModel: MovieListViewModel by lazy {
+        ViewModelProvider(this).get(MovieListViewModel::class.java)
     }
 
     private val onMovieClickListener = object : OnMovieClickListener {
-        override fun onMovieClick(movieId: Int) {
+        override fun onMovieClick(movieId: Long) {
             activity?.supportFragmentManager?.apply {
                 beginTransaction()
                     .add(R.id.fragment_host, DetailFragment.newInstance(movieId = movieId))
@@ -81,21 +43,12 @@ class HomeFragment : Fragment() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        context?.let {
-            LocalBroadcastManager.getInstance(it).registerReceiver(
-                receiver,
-                IntentFilter(MOVIE_LIST_RECEIVER_ACTION)
-            )
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        setHasOptionsMenu(true)
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -115,11 +68,23 @@ class HomeFragment : Fragment() {
         topAwaitMoviesAdapter.deleteMovieClickListener()
     }
 
-    override fun onDestroy() {
-        context?.let {
-            LocalBroadcastManager.getInstance(it).unregisterReceiver(receiver)
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_search, menu)
+        (menu.findItem(R.id.item_search).actionView as SearchView).apply {
+            queryHint = activity?.getString(R.string.search)
+            setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    return false
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    topBestMoviesAdapter.filter.filter(newText)
+                    topAwaitMoviesAdapter.filter.filter(newText)
+
+                    return true
+                }
+            })
         }
-        super.onDestroy()
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -130,12 +95,15 @@ class HomeFragment : Fragment() {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         }
 
+        viewModel.getTopBestLiveData().observe(viewLifecycleOwner) {
+            renderTopBestData(it)
+        }
+
         binding.topBestError.setOnClickListener {
             requestTopBest()
         }
 
         requestTopBest()
-
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -146,79 +114,69 @@ class HomeFragment : Fragment() {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         }
 
+        viewModel.getTopAwaitLiveData().observe(viewLifecycleOwner) {
+            renderTopAwait(it)
+        }
+
         binding.topAwaitError.setOnClickListener {
             requestTopAwait()
         }
 
         requestTopAwait()
-
     }
 
     private fun requestTopBest() {
-        with(binding) {
-            topBestError.visibility = View.GONE
-            topBestLoading.root.visibility = View.VISIBLE
-        }
-        context?.let {
-            it.startService(
-                Intent(it, MovieListService::class.java).apply {
-                    putExtra(EXTRA_MOVIE_LOAD_MODE, MoviesLoadMode.TOP_BEST_FILMS.getMode())
-                }
-            )
-        }
+        viewModel.getMovieList(MoviesLoadMode.TOP_BEST_FILMS)
     }
 
     private fun requestTopAwait() {
-        with(binding) {
-            topAwaitError.visibility = View.GONE
-            topBestLoading.root.visibility = View.VISIBLE
-        }
+        viewModel.getMovieList(MoviesLoadMode.TOP_AWAIT_FILMS)
+    }
 
-        context?.let {
-            it.startService(
-                Intent(it, MovieListService::class.java).apply {
-                    putExtra(EXTRA_MOVIE_LOAD_MODE, MoviesLoadMode.TOP_AWAIT_FILMS.getMode())
+    private fun renderTopBestData(appState: AppState) {
+        when (appState) {
+            is AppState.SuccessList -> {
+                binding.topBestLoading.root.visibility = View.GONE
+                binding.topBestMainLayout.visibility = View.VISIBLE
+                appState.movies.films?.let {
+                    topBestMoviesAdapter.setMovies(it)
                 }
-            )
-        }
-    }
-
-    private fun showTopBestMovies(movieList: MovieList) {
-        movieList.films?.let {
-            topBestMoviesAdapter.setMovies(it)
-            with(binding) {
-                topBestLoading.root.visibility = View.GONE
-                topBestMainLayout.visibility = View.VISIBLE
+            }
+            is AppState.Error -> {
+                binding.topBestLoading.root.visibility = View.GONE
+                binding.topBestError.visibility = View.VISIBLE
+            }
+            is AppState.Loading -> {
+                binding.topBestLoading.root.visibility = View.VISIBLE
+                binding.topBestError.visibility = View.GONE
+                binding.topBestMainLayout.visibility = View.GONE
             }
         }
     }
 
-    private fun showTopBestMoviesError() {
-        with(binding) {
-            topBestLoading.root.visibility = View.GONE
-            topBestError.visibility = View.VISIBLE
-        }
-    }
-
-    private fun showTopAwaitMovies(movieList: MovieList) {
-        movieList.films?.let {
-            topAwaitMoviesAdapter.setMovies(it)
-            with(binding) {
-                topAwaitLoading.root.visibility = View.GONE
-                topAwaitMainLayout.visibility = View.VISIBLE
+    private fun renderTopAwait(appState: AppState) {
+        when (appState) {
+            is AppState.SuccessList -> {
+                binding.topAwaitLoading.root.visibility = View.GONE
+                binding.topAwaitMainLayout.visibility = View.VISIBLE
+                appState.movies.films?.let {
+                    topAwaitMoviesAdapter.setMovies(it)
+                }
             }
-        }
-    }
-
-    private fun showTopAwaitMoviesError() {
-        with(binding) {
-            topAwaitLoading.root.visibility = View.GONE
-            topAwaitError.visibility = View.VISIBLE
+            is AppState.Error -> {
+                binding.topAwaitLoading.root.visibility = View.GONE
+                binding.topAwaitError.visibility = View.VISIBLE
+            }
+            is AppState.Loading -> {
+                binding.topAwaitLoading.root.visibility = View.VISIBLE
+                binding.topAwaitError.visibility = View.GONE
+                binding.topAwaitMainLayout.visibility = View.GONE
+            }
         }
     }
 
     interface OnMovieClickListener {
-        fun onMovieClick(movieId: Int)
+        fun onMovieClick(movieId: Long)
     }
 
 }
