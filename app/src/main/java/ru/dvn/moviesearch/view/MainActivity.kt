@@ -1,9 +1,9 @@
 package ru.dvn.moviesearch.view
 
-import android.content.IntentFilter
-import android.net.ConnectivityManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import ru.dvn.moviesearch.R
 import ru.dvn.moviesearch.databinding.ActivityMainBinding
 
@@ -26,11 +26,21 @@ class MainActivity : AppCompatActivity() {
                     createHomeFragment()
                     true
                 }
-                R.id.bottom_item_favorites -> {
+                R.id.bottom_item_history -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(binding.fragmentHost.id, HistoryFragment())
+                        .addToBackStack(null)
+                        .commit()
+
+                    true
+                }
+                R.id.bottom_item_settings -> {
                     supportFragmentManager
                         .beginTransaction()
-                        .replace(binding.fragmentHost.id, FavoritesFragment.newInstance())
+                        .replace(binding.fragmentHost.id, SettingsFragment())
+                        .addToBackStack(null)
                         .commit()
+
                     true
                 }
                 else -> {
@@ -38,6 +48,24 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_activity_main_toolbar_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.item_contacts -> {
+                supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.fragment_host, ContactsFragment.newInstance())
+                    .addToBackStack(null)
+                    .commit()
+            }
+        }
+        return true
     }
 
     private fun createHomeFragment() {
