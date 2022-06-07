@@ -2,12 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_histories"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        tools:listitem="@layout/history_item"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+    <include
+        android:id="@+id/loading_layout"
+        layout="@layout/loading_layout"
+        android:visibility="gone"/>
 
 </LinearLayout>

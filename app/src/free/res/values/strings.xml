@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="free_version">Вы используете свободную версию</string>
+    <string name="try_paid">Перейти к оплате</string>
+    <string name="paid_magic">Происходит магия \"оплаты\" и дальше ничего не происходит</string>
+</resources>
