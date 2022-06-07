@@ -20,8 +20,8 @@
 
             <ImageView
                 android:id="@+id/iv_movie_poster"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="@dimen/list_item_image_view_default_size"
+                android:layout_height="@dimen/list_item_image_view_default_size"
                 android:scaleType="centerCrop" />
 
             <LinearLayout

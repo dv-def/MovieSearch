@@ -2,6 +2,7 @@
 <resources>
     <dimen name="label_text_size">20sp</dimen>
     <dimen name="default_margin">4dp</dimen>
+    <dimen name="default_padding">4dp</dimen>
 
     <dimen name="loading_text_size">16sp</dimen>
 
@@ -13,11 +14,16 @@
     <dimen name="detail_movie_default_text_size">16sp</dimen>
     <dimen name="bnt_save_margin">8dp</dimen>
     <dimen name="settings_padding">4dp</dimen>
-    <dimen name="note_title">18sp</dimen>
+    <dimen name="title_text_size">18sp</dimen>
     <dimen name="card_content_padding">8dp</dimen>
     <dimen name="note_text">18sp</dimen>
     <dimen name="history_movie_name">20sp</dimen>
     <dimen name="history_text_margin">16dp</dimen>
     <dimen name="contact_name_text_size">18sp</dimen>
     <dimen name="contact_number_text_size">16sp</dimen>
+    <dimen name="item_staff_default_text_size">16sp</dimen>
+
+
+    <dimen name="list_item_image_view_default_size">60dp</dimen>
+    <dimen name="list_item_staff_image_view_default_size">60dp</dimen>
 </resources>

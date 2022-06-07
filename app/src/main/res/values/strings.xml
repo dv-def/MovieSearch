@@ -21,7 +21,7 @@
     <string name="enable_notes">Включить заметки</string>
     <string name="save">Сохранить</string>
     <string name="history">Истроия</string>
-    <string name="add_note">Добваить заметку</string>
+    <string name="add_note">Добавить заметку</string>
     <string name="note_title">Заголовок</string>
     <string name="note_text">Текст заметки</string>
     <string name="search">Поиск</string>
@@ -35,4 +35,14 @@
     <string name="agree_call">Подтвердите звонок</string>
     <string name="will_call_to_number">Будет совершен звонок на номер\n</string>
     <string name="do_call">Позвонить</string>
+    <string name="back">Назад</string>
+    <string name="show_staff">Показать актерский состав</string>
+    <string name="birthplace">Место рождения</string>
+    <string name="birthday">Дата рождения</string>
+    <string name="deathday">Дата смерти</string>
+    <string name="deathplace">Место смерти</string>
+    <string name="show_film_list">Список фильмов</string>
+    <string name="movie_name">Название фильма</string>
+    <string name="no_histiry">В истории пока что нет ни одной записи</string>
+    <string name="contacts_error">Не удалось загрузить контакты</string>
 </resources>
