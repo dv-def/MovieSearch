@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">КиноТоп</string>
-    <string name="home">Главна</string>
+    <string name="home">Главная</string>
     <string name="favorites">Избранное</string>
     <string name="top_best">Топ лучших</string>
     <string name="formatted_error">Ошибка: %s</string>
@@ -16,4 +16,23 @@
     <string name="year">Год:</string>
     <string name="rating_await">Ожидаемый рейтинг:</string>
     <string name="description_is_empty">Описание пока что отсутствует</string>
+    <string name="detail_error">Невозможо отобразить информацию по фильму</string>
+    <string name="settings">Настройки</string>
+    <string name="enable_notes">Включить заметки</string>
+    <string name="save">Сохранить</string>
+    <string name="history">Истроия</string>
+    <string name="add_note">Добваить заметку</string>
+    <string name="note_title">Заголовок</string>
+    <string name="note_text">Текст заметки</string>
+    <string name="search">Поиск</string>
+    <string name="contacts">Контакты</string>
+    <string name="permission_needed">Требуется разрешение</string>
+    <string name="contacts_needed_explanation">Для просмотра контактов требуется ваше разрешение</string>
+    <string name="cancel">Отмена</string>
+    <string name="get_access">Предоставить доступ</string>
+    <string name="contacts_fragment_will_be_close">Доступ к контактам не предоставлен. Экран будет закрыт</string>
+    <string name="close">Закрыть</string>
+    <string name="agree_call">Подтвердите звонок</string>
+    <string name="will_call_to_number">Будет совершен звонок на номер\n</string>
+    <string name="do_call">Позвонить</string>
 </resources>

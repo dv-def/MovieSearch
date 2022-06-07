@@ -2,21 +2,19 @@ package ru.dvn.moviesearch.view
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Toast
+import android.view.*
 import androidx.annotation.RequiresApi
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.dvn.moviesearch.R
 import ru.dvn.moviesearch.databinding.FragmentHomeBinding
-import ru.dvn.moviesearch.model.movie.MovieAdapter
-import ru.dvn.moviesearch.model.movie.list.MovieList
-import ru.dvn.moviesearch.model.movie.list.MovieListLoader
-import ru.dvn.moviesearch.model.movie.list.MoviesLoadMode
+import ru.dvn.moviesearch.model.AppState
+import ru.dvn.moviesearch.model.movie.list.MovieAdapter
+import ru.dvn.moviesearch.model.movie.list.remote.MoviesLoadMode
+import ru.dvn.moviesearch.viewmodel.MovieListViewModel
 
 class HomeFragment : Fragment() {
     companion object {
@@ -29,8 +27,12 @@ class HomeFragment : Fragment() {
     private lateinit var topBestMoviesAdapter: MovieAdapter
     private lateinit var topAwaitMoviesAdapter: MovieAdapter
 
+    private val viewModel: MovieListViewModel by lazy {
+        ViewModelProvider(this).get(MovieListViewModel::class.java)
+    }
+
     private val onMovieClickListener = object : OnMovieClickListener {
-        override fun onMovieClick(movieId: Int) {
+        override fun onMovieClick(movieId: Long) {
             activity?.supportFragmentManager?.apply {
                 beginTransaction()
                     .add(R.id.fragment_host, DetailFragment.newInstance(movieId = movieId))
@@ -41,45 +43,12 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private val topBestMoviesLoaderListener = object: MovieListLoader.MovieListLoaderListener {
-        override fun onLoaded(movieList: MovieList) {
-            movieList.films?.let {
-                binding.topBestLoading.root.visibility = View.GONE
-                topBestMoviesAdapter.setMovies(it)
-            }
-        }
-
-        override fun onFailed(throwable: Throwable) {
-            binding.topBestLoading.root.visibility = View.GONE
-            binding.topBestError.visibility = View.VISIBLE
-            Toast.makeText(context, "Can not load TOP_BEST movies", Toast.LENGTH_SHORT).show()
-        }
-    }
-    private val topBestMoviesLoader = MovieListLoader(topBestMoviesLoaderListener, MoviesLoadMode.TOP_BEST_FILMS)
-
-    private val topAwaitMoviesLoaderListener = object: MovieListLoader.MovieListLoaderListener {
-        override fun onLoaded(movieList: MovieList) {
-            movieList.films?.let {
-                binding.topAwaitLoading.root.visibility = View.GONE
-                topAwaitMoviesAdapter.setMovies(it)
-            }
-        }
-
-        override fun onFailed(throwable: Throwable) {
-            binding.topAwaitLoading.root.visibility = View.GONE
-            binding.topAwaitError.visibility = View.VISIBLE
-            Toast.makeText(context, "Can not load TOP_AWAIT movies", Toast.LENGTH_SHORT).show()
-            Log.d("LOADER", throwable.message.toString())
-        }
-    }
-
-    private val topAwaitMoviesLoader = MovieListLoader(topAwaitMoviesLoaderListener, MoviesLoadMode.TOP_AWAIT_FILMS)
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        setHasOptionsMenu(true)
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -96,6 +65,26 @@ class HomeFragment : Fragment() {
         super.onDestroyView()
         _binding = null
         topBestMoviesAdapter.deleteMovieClickListener()
+        topAwaitMoviesAdapter.deleteMovieClickListener()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_search, menu)
+        (menu.findItem(R.id.item_search).actionView as SearchView).apply {
+            queryHint = activity?.getString(R.string.search)
+            setOnQueryTextListener(object: SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    return false
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    topBestMoviesAdapter.filter.filter(newText)
+                    topAwaitMoviesAdapter.filter.filter(newText)
+
+                    return true
+                }
+            })
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -106,8 +95,15 @@ class HomeFragment : Fragment() {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         }
 
-        topBestMoviesLoader.loadMovieList()
+        viewModel.getTopBestLiveData().observe(viewLifecycleOwner) {
+            renderTopBestData(it)
+        }
 
+        binding.topBestError.setOnClickListener {
+            requestTopBest()
+        }
+
+        requestTopBest()
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -118,11 +114,69 @@ class HomeFragment : Fragment() {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         }
 
-        topAwaitMoviesLoader.loadMovieList()
+        viewModel.getTopAwaitLiveData().observe(viewLifecycleOwner) {
+            renderTopAwait(it)
+        }
+
+        binding.topAwaitError.setOnClickListener {
+            requestTopAwait()
+        }
+
+        requestTopAwait()
+    }
+
+    private fun requestTopBest() {
+        viewModel.getMovieList(MoviesLoadMode.TOP_BEST_FILMS)
+    }
+
+    private fun requestTopAwait() {
+        viewModel.getMovieList(MoviesLoadMode.TOP_AWAIT_FILMS)
+    }
+
+    private fun renderTopBestData(appState: AppState) {
+        when (appState) {
+            is AppState.SuccessList -> {
+                binding.topBestLoading.root.visibility = View.GONE
+                binding.topBestMainLayout.visibility = View.VISIBLE
+                appState.movies.films?.let {
+                    topBestMoviesAdapter.setMovies(it)
+                }
+            }
+            is AppState.Error -> {
+                binding.topBestLoading.root.visibility = View.GONE
+                binding.topBestError.visibility = View.VISIBLE
+            }
+            is AppState.Loading -> {
+                binding.topBestLoading.root.visibility = View.VISIBLE
+                binding.topBestError.visibility = View.GONE
+                binding.topBestMainLayout.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun renderTopAwait(appState: AppState) {
+        when (appState) {
+            is AppState.SuccessList -> {
+                binding.topAwaitLoading.root.visibility = View.GONE
+                binding.topAwaitMainLayout.visibility = View.VISIBLE
+                appState.movies.films?.let {
+                    topAwaitMoviesAdapter.setMovies(it)
+                }
+            }
+            is AppState.Error -> {
+                binding.topAwaitLoading.root.visibility = View.GONE
+                binding.topAwaitError.visibility = View.VISIBLE
+            }
+            is AppState.Loading -> {
+                binding.topAwaitLoading.root.visibility = View.VISIBLE
+                binding.topAwaitError.visibility = View.GONE
+                binding.topAwaitMainLayout.visibility = View.GONE
+            }
+        }
     }
 
     interface OnMovieClickListener {
-        fun onMovieClick(movieId: Int)
+        fun onMovieClick(movieId: Long)
     }
 
 }
