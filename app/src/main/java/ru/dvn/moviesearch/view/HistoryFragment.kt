@@ -3,10 +3,8 @@ package ru.dvn.moviesearch.view
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Toast
+import android.view.*
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import ru.dvn.moviesearch.R
@@ -44,6 +42,8 @@ class HistoryFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        setHasOptionsMenu(true)
+
         handlerThread = HandlerThread("History HT")
         handlerThread?.start()
 
@@ -68,6 +68,23 @@ class HistoryFragment : Fragment() {
         _binding = null
         handlerThread?.quitSafely()
         handlerThread = null
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_search, menu)
+        (menu.findItem(R.id.item_search).actionView as SearchView).apply {
+            queryHint = activity?.getString(R.string.search)
+            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    return false
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    historyAdapter.filter.filter(newText)
+                    return true
+                }
+            })
+        }
     }
 
     private fun requestHistory() {
