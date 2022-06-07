@@ -206,5 +206,6 @@ class ContactsFragment : Fragment() {
             it.startService(Intent(it, ContactsService::class.java))
         }
         
+        
     }
 }
