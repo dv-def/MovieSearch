@@ -205,5 +205,6 @@ class ContactsFragment : Fragment() {
             binding.rvContacts.visibility = View.GONE
             it.startService(Intent(it, ContactsService::class.java))
         }
+        
     }
 }
