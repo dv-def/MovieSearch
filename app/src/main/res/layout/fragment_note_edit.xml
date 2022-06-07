@@ -1,49 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-        android:id="@+id/til_note_title"
+    <LinearLayout
+        android:id="@+id/main_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/note_title"
-        android:layout_margin="@dimen/default_margin"
-        app:endIconMode="clear_text">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_note_title"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textSize="@dimen/title_text_size"/>
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/default_margin"
+            android:hint="@string/note_title"
+            app:endIconMode="clear_text">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="@dimen/title_text_size" />
 
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-        android:id="@+id/til_note_text"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:hint="@string/note_text"
-        android:layout_weight="1"
-        android:layout_margin="@dimen/default_margin">
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_note_text"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textSize="@dimen/title_text_size"
-            android:gravity="start|top"/>
+            android:layout_height="0dp"
+            android:layout_margin="@dimen/default_margin"
+            android:layout_weight="1"
+            android:hint="@string/note_text">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="start|top"
+                android:textSize="@dimen/title_text_size" />
 
-    <Button
-        android:id="@+id/btn_note_save"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/save"
-        android:textAllCaps="false"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/btn_note_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/save"
+            android:textAllCaps="false" />
+
+    </LinearLayout>
+
+    <include
+        android:id="@+id/loading_layout"
+        layout="@layout/loading_layout"
+        android:visibility="gone"/>
 
 </LinearLayout>
